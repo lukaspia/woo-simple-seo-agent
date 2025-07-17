@@ -21,14 +21,11 @@ declare(strict_types=1);
 
 namespace WooSimpleSeoAgent;
 
-use WooSimpleSeoAgent\Assets\AssetManager;
-use WooSimpleSeoAgent\Controller\Admin\ProductSeoMetaboxController;
-use WooSimpleSeoAgent\Rest\ApiManager;
-
 if (!defined('ABSPATH')) {
     exit;
 }
 
+// Require the autoloader if it exists.
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
 }
@@ -56,26 +53,14 @@ final class WooSimpleSeoAgent
      */
     private function __construct()
     {
-        $this->initializeComponents();
-    }
-
-    /**
-     * Initialize plugin components.
-     *
-     * @since 1.0.0
-     */
-    private function initializeComponents(): void
-    {
-        new ProductSeoMetaboxController();
-        new ApiManager();
-        new AssetManager(plugin_dir_path(__FILE__), plugin_dir_url(__FILE__));
+        // Initialization logic, like adding hooks, goes here.
     }
 
     /**
      * Get the singleton instance of the class.
      *
-     * @return WooSimpleSeoAgent
      * @since 1.0.0
+     * @return WooSimpleSeoAgent
      */
     public static function instance(): self
     {
