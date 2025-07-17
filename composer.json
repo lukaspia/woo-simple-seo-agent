@@ -1,0 +1,18 @@
+{
+    "name": "lukasz/woo-simple-seo-agent",
+    "description": "Simple SEO agent for WooCommerce.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Lukasz"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "WooSimpleSeoAgent\\": "src/"
+        }
+    }
+}
