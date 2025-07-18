@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace WooSimpleSeoAgent;
 
+use WooSimpleSeoAgent\Controller\Rest\AgentSeoController;
 use WooSimpleSeoAgent\MetaBox\ProductSeoAgentMetaBox;
 
 if (!defined('ABSPATH')) {
@@ -66,6 +67,39 @@ final class WooSimpleSeoAgent
     private function initializeComponents(): void
     {
         new ProductSeoAgentMetaBox();
+        $this->initializeRestApi();
+    }
+
+    /**
+     * Initialize REST API endpoints.
+     *
+     * @since 1.0.0
+     */
+    private function initializeRestApi(): void
+    {
+        add_action('rest_api_init', [$this, 'registerRestRoutes']);
+    }
+
+    /**
+     * Register REST API routes.
+     *
+     * @since 1.0.0
+     */
+    public function registerRestRoutes(): void
+    {
+        $controller = new AgentSeoController();
+
+        register_rest_route(
+            'wssa/v1',
+            '/agent/generate',
+            [
+                'methods'             => 'POST',
+                'callback'            => [$controller, 'handleGenerateRequest'],
+                /*'permission_callback' => static function () { //TODO odkomentować
+                    return current_user_can('edit_posts');
+                }*/
+            ]
+        );
     }
 
     /**
