@@ -45,7 +45,7 @@ class AgentSeoController implements RestControllerInterface
      */
     public function handleGenerateRequest(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
-        // AI agent logic will be implemented here.
+
         return new WP_REST_Response(['message' => 'Request received, processing will be implemented later.'], 200);
     }
 }

@@ -10,7 +10,8 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "symfony/var-dumper": "7.4.x-dev"
+        "symfony/var-dumper": "7.4.x-dev",
+        "inspector-apm/neuron-ai": "dev-main"
     },
     "autoload": {
         "psr-4": {
