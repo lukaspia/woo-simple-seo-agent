@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace WooSimpleSeoAgent;
 
+use WooSimpleSeoAgent\MetaBox\ProductSeoAgentMetaBox;
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -53,7 +55,17 @@ final class WooSimpleSeoAgent
      */
     private function __construct()
     {
-        // Initialization logic, like adding hooks, goes here.
+        $this->initializeComponents();
+    }
+
+    /**
+     * Initialize plugin components.
+     *
+     * @since 1.0.0
+     */
+    private function initializeComponents(): void
+    {
+        new ProductSeoAgentMetaBox();
     }
 
     /**
