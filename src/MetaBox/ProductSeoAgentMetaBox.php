@@ -41,7 +41,13 @@ class ProductSeoAgentMetaBox
      */
     public function render(\WP_Post $post): void
     {
+        $seoMetaTag = get_post_meta($post->ID, '_wssa_seo_meta_tag', true);
 
+        $templatePath = plugin_dir_path(__DIR__) . '../templates/product-seo-metabox-form.php';
+
+        if (file_exists($templatePath)) {
+            include $templatePath;
+        }
     }
 
     /**
