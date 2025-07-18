@@ -1,3 +1,6 @@
 /.idea
 /.qodo
 /vendor
+
+# Local config file
+config.php
