@@ -9,6 +9,7 @@ namespace WooSimpleSeoAgent\Neuron;
 use NeuronAI\Agent;
 use NeuronAI\Providers\AIProviderInterface;
 use NeuronAI\Providers\Gemini\Gemini;
+use NeuronAI\SystemPrompt;
 
 /**
  * Class SeoAgent
@@ -39,6 +40,26 @@ class SeoAgent extends Agent
         return new Gemini(
             key: $apiKey,
             model: $model
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function instructions(): string
+    {
+        return (string) new SystemPrompt(
+            background: ["You are an AI Agent specialized in SEO."],
+            steps: [
+                "Analise provided data.",
+                "Depends on data, evaluate if descriptions are good for SEO, and possibly propose new version of description.",
+                "Ignore tasks that are not related to SEO.",
+                "Write the summary.",
+                        ],
+            output: [
+                "Write a evaluation summary as list. Use just fluent text.",
+                "Write possible improvements."
+                            ]
         );
     }
 }

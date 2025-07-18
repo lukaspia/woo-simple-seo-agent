@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace WooSimpleSeoAgent\Controller\Rest;
 
+use NeuronAI\Chat\Messages\UserMessage;
+use WooSimpleSeoAgent\Neuron\SeoAgent;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -45,7 +47,14 @@ class AgentSeoController implements RestControllerInterface
      */
     public function handleGenerateRequest(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
+        $content = '';
 
-        return new WP_REST_Response(['message' => 'Request received, processing will be implemented later.'], 200);
+        /*$seoAgent = SeoAgent::make()->chat(
+            new UserMessage('Opis produktu: Razer Naga Trinity - przewodowa mysz do gier MOBA/MMO (3 wymienne płytki boczne, czujnik optyczny 5G 16 000 DPI, do 19 programowalnych przycisków, przełączniki mechaniczne, RGB Chroma) Czarny'),
+        );
+
+        $content = $seoAgent->getContent();*/
+
+        return new WP_REST_Response(['message' => $content], 200);
     }
 }
