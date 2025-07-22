@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace WooSimpleSeoAgent;
 
 use WooSimpleSeoAgent\MetaBox\ProductSeoAgentMetaBox;
+use WooSimpleSeoAgent\Rest\ApiManager;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -66,6 +67,7 @@ final class WooSimpleSeoAgent
     private function initializeComponents(): void
     {
         new ProductSeoAgentMetaBox();
+        new ApiManager();
     }
 
     /**
