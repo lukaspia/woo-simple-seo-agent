@@ -13,6 +13,7 @@ use NeuronAI\SystemPrompt;
 use NeuronAI\Tools\PropertyType;
 use NeuronAI\Tools\Tool;
 use NeuronAI\Tools\ToolProperty;
+use WooSimpleSeoAgent\Dto\Seo;
 
 /**
  * Class SeoAgent
@@ -56,19 +57,28 @@ class SeoAgent extends Agent
         return (string)new SystemPrompt(
             background: ["You are an AI Agent specialized in SEO."],
             steps:      [
-                            "Use the tools you have available to retrieve the product data you need.",
-                            "Analise provided data.",
-                            "Depends on data, evaluate if descriptions are good for SEO, and possibly propose new version of description.",
-                            "Ignore tasks that are not related to SEO.",
-                            "Write the summary.",
+                            //"Use provided tool to retrieve product data.",
+                            "Improve seo elements if needed.",
+                            "In process of improvement, use the same language as provided data are written.",
+                            "Take into account requirements of GEO (Generative Engine Optimization) in you tasks.",
+                            //"Use the tools you have available to retrieve the product data you need. If no tools are available, ask user for data.",
+                            //"Analise provided data.",
+                            //"Depends on data, evaluate if title, descriptions, keywords and short description are good for SEO, and possibly propose new version of it.",
+                            //"If some data are not provided, and you have no tools to retrieve it, ignore it or propose output for this data.",
+                            //"In description you can use html tags if needed (for example to highlight important words).",
+                            "Ignore tasks that are not related to SEO and process of retrieves data that you require to do SEO tasks.",
+                            "Write the summary of the evaluation, where you mention the possible improvements or other messages for user.",
                         ],
             output:     [
-                            "Write a evaluation summary as list. Use just fluent text.",
-                            "Write possible improvements."
+                            //"Write a evaluation summary with possible improvements as a list.",
+                            "Return everything as json with fields title, description, keywords, shortDescription and summary."
                         ]
         );
     }
 
+    /**
+     * @return array|\NeuronAI\Tools\ToolInterface[]|\NeuronAI\Tools\Toolkits\ToolkitInterface[]
+     */
     protected function tools(): array
     {
         return [
@@ -82,11 +92,40 @@ class SeoAgent extends Agent
                     description: 'Id of the product.',
                     required:    true
                 )
-            )->setCallable(function (string $productId) {
+            )->setCallable(function (int $productId) {
+                $product = wc_get_product($productId);
+
                 return [
-                    'description' => wc_get_product($productId)->get_description()
+                    'title' => $product->get_title(),
+                    'description' => $product->get_description(),
+                    'shortDescription' => $product->get_short_description(),
+                    'keywords' => $this->getKeywords($productId),
                 ];
             })
         ];
+    }
+
+    /**
+     * @return string
+     */
+    protected function getOutputClass(): string
+    {
+        return Seo::class;
+    }
+
+    private function getKeywords(int $productId): string
+    {
+        $productTags = get_the_terms($productId, 'product_tag');
+
+        if (!empty($productTags) && !is_wp_error($productTags)) {
+            $tagNames = [];
+            foreach ($productTags as $tag) {
+                $tagNames[] = $tag->name;
+            }
+
+            return implode(', ', $tagNames);
+        }
+
+        return '';
     }
 }
