@@ -6,9 +6,7 @@ namespace WooSimpleSeoAgent\Rest;
 
 use NeuronAI\StructuredOutput\JsonExtractor;
 use WooSimpleSeoAgent\Controller\Rest\AgentSeoController;
-use WooSimpleSeoAgent\Controller\Rest\ProductMetaController;
-use WooSimpleSeoAgent\Neuron\SeoAgent as NeuronSeoAgent;
-use WooSimpleSeoAgent\Service\NeuronSeoAgentAdapter;
+use WooSimpleSeoAgent\Neuron\SeoAgent;
 
 /**
  * Class ApiManager
@@ -17,7 +15,7 @@ use WooSimpleSeoAgent\Service\NeuronSeoAgentAdapter;
  */
 class ApiManager
 {
-    public const NAMESPACE = 'wssa/v1';
+    private const NAMESPACE = 'wssa/v1';
 
     /**
      * Initialize the API manager.
@@ -46,9 +44,9 @@ class ApiManager
     {
         return [
             new AgentSeoController(
-                new NeuronSeoAgentAdapter(new NeuronSeoAgent(), new JsonExtractor())
+                new SeoAgent(),
+                new JsonExtractor()
             ),
-            new ProductMetaController()
         ];
     }
 }

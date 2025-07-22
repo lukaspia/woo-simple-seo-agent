@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace WooSimpleSeoAgent\Controller\Rest;
 
-
-use WooSimpleSeoAgent\Service\SeoAgentInterface;
+use NeuronAI\Chat\Messages\UserMessage;
+use NeuronAI\StructuredOutput\JsonExtractor;
+use WooSimpleSeoAgent\Neuron\SeoAgent;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -16,13 +17,10 @@ use WooSimpleSeoAgent\Controller\Rest\RestControllerInterface;
  *
  * @package WooSimpleSeoAgent\Controller\Rest
  */
-class AgentSeoController extends AbstractRestController
+readonly class AgentSeoController implements RestControllerInterface
 {
-    public const GENERATE_SEO_URL = '/agent/generate';
 
-    public function __construct(
-        private readonly SeoAgentInterface $seoAgent
-    )
+    public function __construct(private SeoAgent $seoAgent, private JsonExtractor $jsonExtractor)
     {
     }
 
@@ -35,11 +33,14 @@ class AgentSeoController extends AbstractRestController
     {
         register_rest_route(
             $namespace,
-            self::GENERATE_SEO_URL,
+            '/agent/generate',
             [
                 'methods' => 'POST',
                 'callback' => [$this, 'handleGenerateRequest'],
-                'permission_callback' => [$this, 'checkPermissions']
+                'permission_callback' => '__return_true'
+                /*'permission_callback' => static function () {
+                    return current_user_can('edit_posts');
+                }*/
             ]
         );
     }
@@ -49,63 +50,39 @@ class AgentSeoController extends AbstractRestController
      *
      * @param WP_REST_Request $request The request object.
      *
-     * @return WP_REST_Response
+     * @return WP_REST_Response|WP_Error
      * @throws \Throwable
      */
-    public function handleGenerateRequest(WP_REST_Request $request): WP_REST_Response
+    public function handleGenerateRequest(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
         $productId = $request->get_param('product_id');
-
         if (empty($productId) || !is_numeric($productId) || (int)$productId <= 0) {
-            return $this->errorResponse(
-                __('Invalid product ID', 'woo-simple-seo-agent'),
-                400
-            );
-        }
-
-        $productId = (int)$productId;
-        $product = wc_get_product($productId);
-
-        if (!$product) {
-            return $this->errorResponse(
-                __('Product not found', 'woo-simple-seo-agent'),
-                404
+            return new WP_Error(
+                'invalid_product_id',
+                'A valid Product ID is required.',
+                ['status' => 400]
             );
         }
 
         $requestMessage = $request->get_param('request_message');
         $requestMessage = $requestMessage ? sanitize_text_field($requestMessage) : '';
 
-        $prompt = "Need SEO optimization for product id $productId";
+        $prompt = "Need SEO optimization for product id {$productId}";
         if (!empty($requestMessage)) {
-            $prompt .= ". Additional request: $requestMessage";
+            $prompt .= ". Additional request: {$requestMessage}";
         }
 
-        $prompt = apply_filters('wssa_agent_prompt', $prompt, $productId);
-
-        $conversationHistory = $request->get_param('conversation_history');
-
         try {
-            $structuredResult = $this->seoAgent->generateSeoContent($prompt, [
-                'conversationHistory' => $conversationHistory ?? []
-            ]);
-
-            if (empty($structuredResult)) {
-                return $this->errorResponse(
-                    __('Invalid response format from AI', 'woo-simple-seo-agent'),
-                    500
-                );
-            }
-
-            return $this->successResponse([
-                'seoData' => $structuredResult, 
-                'prompt' => $prompt
-            ]);
-        } catch (\Exception $e) {
-            return $this->errorResponse(
-                $e->getMessage(),
-                500
+            $seo = $this->seoAgent->chat(
+                new UserMessage($prompt)
             );
+
+            $seoJson = $this->jsonExtractor->getJson($seo->getContent());
+            $seoObject = json_decode($seoJson, true, 512, JSON_THROW_ON_ERROR);
+
+            return new WP_REST_Response(['seo' => $seoObject], 200);
+        } catch (\JsonException $e) {
+            return new WP_Error('json_error', $e->getMessage(), ['status' => 500]);
         }
     }
 }
