@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace WooSimpleSeoAgent\Rest;
 
+use NeuronAI\StructuredOutput\JsonExtractor;
 use WooSimpleSeoAgent\Controller\Rest\AgentSeoController;
+use WooSimpleSeoAgent\Neuron\SeoAgent;
 
 /**
  * Class ApiManager
@@ -41,7 +43,10 @@ class ApiManager
     private function getControllers(): array
     {
         return [
-            new AgentSeoController(),
+            new AgentSeoController(
+                new SeoAgent(),
+                new JsonExtractor()
+            ),
         ];
     }
 }

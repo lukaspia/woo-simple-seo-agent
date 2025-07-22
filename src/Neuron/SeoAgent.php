@@ -57,16 +57,15 @@ class SeoAgent extends Agent
         return (string)new SystemPrompt(
             background: ["You are an AI Agent specialized in SEO."],
             steps:      [
-                            //"Use provided tool to retrieve product data.",
                             "Improve seo elements if needed.",
-                            "In process of improvement, use the same language as provided data are written.",
-                            "Take into account requirements of GEO (Generative Engine Optimization) in you tasks.",
+                            "Use the same language as provided data are written. Do not translate.",
+                            //"Take into account requirements of GEO (Generative Engine Optimization) in you tasks.",
                             //"Use the tools you have available to retrieve the product data you need. If no tools are available, ask user for data.",
                             //"Analise provided data.",
                             //"Depends on data, evaluate if title, descriptions, keywords and short description are good for SEO, and possibly propose new version of it.",
                             //"If some data are not provided, and you have no tools to retrieve it, ignore it or propose output for this data.",
                             //"In description you can use html tags if needed (for example to highlight important words).",
-                            "Ignore tasks that are not related to SEO and process of retrieves data that you require to do SEO tasks.",
+                            //"Ignore tasks that are not related to SEO and process of retrieves data that you require to do SEO tasks.",
                             "Write the summary of the evaluation, where you mention the possible improvements or other messages for user.",
                         ],
             output:     [
