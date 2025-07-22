@@ -4,3 +4,9 @@
 
 # Local config file
 config.php
+
+# Node dependencies
+/node_modules/
+
+# Compiled assets
+/assets/dist/

@@ -26,7 +26,7 @@ if (!defined('ABSPATH')) {
             <label for="wssa_seo_short_description"><?php esc_html_e('Prepare short description', 'woo-simple-seo-agent'); ?></label>
         </p>
         <p>
-            <input type="checkbox" id="wssa_seo_evaluation" name="wssa_seo_tags" checked />
+            <input type="checkbox" id="wssa_seo_tags" name="wssa_seo_tags" checked />
             <label for="wssa_seo_tags" name="wssa_seo_tags" /><?php esc_html_e('Make tags', 'woo-simple-seo-agent'); ?></label>
         </p>
         <p>

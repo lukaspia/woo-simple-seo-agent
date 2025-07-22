@@ -57,6 +57,33 @@ final class WooSimpleSeoAgent
     private function __construct()
     {
         $this->initializeComponents();
+        add_action('admin_enqueue_scripts', [$this, 'enqueueScripts']);
+    }
+
+    /**
+     * Enqueue scripts and styles.
+     *
+     * @since 1.0.0
+     */
+    public function enqueueScripts($hook): void
+    {
+        // Load scripts only on the product edit page.
+        if ('post.php' !== $hook && 'post-new.php' !== $hook) {
+            return;
+        }
+
+        global $post;
+        if (!$post || 'product' !== $post->post_type) {
+            return;
+        }
+
+        wp_enqueue_script(
+            'woo-simple-seo-agent-script',
+            plugin_dir_url(__FILE__) . 'assets/dist/bundle.js',
+            ['jquery'],
+            '1.0.0',
+            true
+        );
     }
 
     /**
