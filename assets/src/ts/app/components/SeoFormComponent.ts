@@ -10,6 +10,7 @@ export class SeoFormComponent {
 
     public init(): void {
         this.view.onSendClick(() => this.handleSendClick());
+        this.view.onAcceptClick((type: string, value: string) => this.handleAcceptClick(type, value));
     }
 
     private async handleSendClick(): Promise<void> {
@@ -29,5 +30,10 @@ export class SeoFormComponent {
         } finally {
             this.view.toggleLoading(false);
         }
+    }
+
+    private handleAcceptClick(type: string, value: string): void {
+        console.log('Accept button clicked for type:', type);
+        console.log('Accept button clicked for value:', value);
     }
 }
