@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace WooSimpleSeoAgent;
 
 use WooSimpleSeoAgent\Assets\AssetManager;
-use WooSimpleSeoAgent\MetaBox\ProductSeoAgentMetaBox;
+use WooSimpleSeoAgent\Controller\Admin\ProductSeoMetaboxController;
 use WooSimpleSeoAgent\Rest\ApiManager;
 
 if (!defined('ABSPATH')) {
@@ -66,7 +66,7 @@ final class WooSimpleSeoAgent
      */
     private function initializeComponents(): void
     {
-        new ProductSeoAgentMetaBox();
+        new ProductSeoMetaboxController();
         new ApiManager();
         new AssetManager(plugin_dir_path(__FILE__), plugin_dir_url(__FILE__));
     }

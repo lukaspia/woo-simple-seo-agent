@@ -1,11 +1,4 @@
 <?php
-/**
- * The template for displaying the product SEO metabox.
- *
- * @var \WP_Post $post The post object.
- * @var string $seoMetaTag The SEO title.
- */
-
 if (!defined('ABSPATH')) {
     exit;
 }
