@@ -72,9 +72,21 @@ class AgentSeoController extends AbstractRestController
             );
         }
 
+        $requestMessage = $request->get_param('request_message');
+        $requestMessage = $requestMessage ? sanitize_text_field($requestMessage) : '';
+
+        $prompt = "Need SEO optimization for product id {$productId}";
+        if (!empty($requestMessage)) {
+            $prompt .= ". Additional request: {$requestMessage}";
+        }
+
         try {
-            $result = $this->seoAgent->generate($product);
-            $structuredResult = $this->jsonExtractor->extract($result);
+            $seo = $this->seoAgent->chat(
+                new UserMessage($prompt)
+            );
+
+            $seoJson = $this->jsonExtractor->getJson($seo->getContent());
+            $structuredResult = json_decode($seoJson, true, 512, JSON_THROW_ON_ERROR);
 
             if (empty($structuredResult)) {
                 return $this->errorResponse(

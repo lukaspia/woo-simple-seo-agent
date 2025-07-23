@@ -17,8 +17,8 @@ class AgentService {
                     request_message: requestMessage,
                 }
             }).done((response) => {
-                if (response && response.seo) {
-                    resolve(response.seo as SeoData);
+                if (response && response.data) {
+                    resolve(response.data as SeoData);
                 } else {
                     reject({ message: 'Invalid API response structure.' } as ApiError);
                 }
