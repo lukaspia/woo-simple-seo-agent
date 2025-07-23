@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace WooSimpleSeoAgent;
 
+use WooSimpleSeoAgent\Assets\AssetManager;
 use WooSimpleSeoAgent\MetaBox\ProductSeoAgentMetaBox;
 use WooSimpleSeoAgent\Rest\ApiManager;
 
@@ -28,7 +29,6 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Require the autoloader if it exists.
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
 }
@@ -57,43 +57,6 @@ final class WooSimpleSeoAgent
     private function __construct()
     {
         $this->initializeComponents();
-        add_action('admin_enqueue_scripts', [$this, 'enqueueScripts']);
-    }
-
-    /**
-     * Enqueue scripts and styles.
-     *
-     * @since 1.0.0
-     */
-    public function enqueueScripts($hook): void
-    {
-        // Load scripts only on the product edit page.
-        if ('post.php' !== $hook && 'post-new.php' !== $hook) {
-            return;
-        }
-
-        global $post;
-        if (!$post || 'product' !== $post->post_type) {
-            return;
-        }
-
-        wp_enqueue_script(
-            'woo-simple-seo-agent-script',
-            plugin_dir_url(__FILE__) . 'assets/dist/bundle.js',
-            ['jquery'],
-            '1.0.1',
-            true
-        );
-
-        wp_localize_script(
-            'woo-simple-seo-agent-script',
-            'wssa_params',
-            [
-                'rest_url' => esc_url_raw(rest_url('wssa/v1/agent/generate')),
-                'nonce' => wp_create_nonce('wp_rest'),
-                'product_id' => get_the_ID(),
-            ]
-        );
     }
 
     /**
@@ -105,6 +68,7 @@ final class WooSimpleSeoAgent
     {
         new ProductSeoAgentMetaBox();
         new ApiManager();
+        new AssetManager(plugin_dir_path(__FILE__), plugin_dir_url(__FILE__));
     }
 
     /**
