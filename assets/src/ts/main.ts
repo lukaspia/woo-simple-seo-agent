@@ -1,5 +1,6 @@
 import $ from 'jquery';
+import { SeoFormComponent } from './app/components/SeoFormComponent';
 
 $(function() {
-    console.log('Hello from TypeScript and jQuery!');
+    new SeoFormComponent().init();
 });
