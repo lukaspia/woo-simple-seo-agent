@@ -56,6 +56,7 @@ readonly class AgentSeoController implements RestControllerInterface
     public function handleGenerateRequest(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
         $productId = $request->get_param('product_id');
+
         if (empty($productId) || !is_numeric($productId) || (int)$productId <= 0) {
             return new WP_Error(
                 'invalid_product_id',

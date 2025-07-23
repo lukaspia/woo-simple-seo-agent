@@ -6,6 +6,7 @@ namespace WooSimpleSeoAgent\Rest;
 
 use NeuronAI\StructuredOutput\JsonExtractor;
 use WooSimpleSeoAgent\Controller\Rest\AgentSeoController;
+use WooSimpleSeoAgent\Controller\Rest\ProductMetaController;
 use WooSimpleSeoAgent\Neuron\SeoAgent;
 
 /**
@@ -47,6 +48,7 @@ class ApiManager
                 new SeoAgent(),
                 new JsonExtractor()
             ),
+            new ProductMetaController()
         ];
     }
 }
