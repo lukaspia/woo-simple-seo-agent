@@ -21,7 +21,7 @@ class ProductMetaController extends AbstractRestController
                 'args' => [
                     'product_id' => [
                         'required' => true,
-                        'validate_callback' => 'is_numeric',
+                        'validate_callback' => [$this, 'validateProductId'],
                         'sanitize_callback' => 'absint',
                     ],
                     'title' => [
@@ -42,7 +42,7 @@ class ProductMetaController extends AbstractRestController
                 'args' => [
                     'product_id' => [
                         'required' => true,
-                        'validate_callback' => 'is_numeric',
+                        'validate_callback' => [$this, 'validateProductId'],
                         'sanitize_callback' => 'absint',
                     ],
                     'description' => [
@@ -63,7 +63,7 @@ class ProductMetaController extends AbstractRestController
                 'args' => [
                     'product_id' => [
                         'required' => true,
-                        'validate_callback' => 'is_numeric',
+                        'validate_callback' => [$this, 'validateProductId'],
                         'sanitize_callback' => 'absint',
                     ],
                     'short_description' => [
@@ -84,7 +84,7 @@ class ProductMetaController extends AbstractRestController
                 'args' => [
                     'product_id' => [
                         'required' => true,
-                        'validate_callback' => 'is_numeric',
+                        'validate_callback' => [$this, 'validateProductId'],
                         'sanitize_callback' => 'absint',
                     ],
                     'keywords' => [
@@ -161,7 +161,7 @@ class ProductMetaController extends AbstractRestController
 
         $result = wp_update_post([
             'ID' => $productId,
-            'post_content' => $shortDescription,
+            'post_excerpt' => $shortDescription,
         ], true);
 
         if (is_wp_error($result)) {

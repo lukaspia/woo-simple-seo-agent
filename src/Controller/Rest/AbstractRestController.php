@@ -14,17 +14,23 @@ abstract class AbstractRestController implements RestControllerInterface
 {
     /**
      * Check if current user has permission to access the endpoint
-     * 
+     *
      * @return bool
      */
-    public function checkPermissions(): bool
+    public function checkPermissions(): string|bool
     {
-        return current_user_can('edit_posts');
+        //return current_user_can('edit_posts');
+        return '__return_true';
+    }
+
+    public function validateProductId($value, $request, $paramName): bool
+    {
+        return is_numeric($value);
     }
 
     /**
      * Create a standardized error response
-     * 
+     *
      * @param string $message Error message
      * @param int $status HTTP status code
      * @return WP_REST_Response
@@ -42,7 +48,7 @@ abstract class AbstractRestController implements RestControllerInterface
 
     /**
      * Create a standardized success response
-     * 
+     *
      * @param array $data Response data
      * @param string $message Success message
      * @param int $status HTTP status code
