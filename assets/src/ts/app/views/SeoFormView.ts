@@ -30,7 +30,7 @@ export class SeoFormView {
         this.removeLoadingIndicator();
 
         if (!this.answerContainer.is(':empty')) {
-            this.answerContainer.append('<hr style="margin: 16px 0;">');
+            this.answerContainer.append('<hr style="height: 3px; background-color: #ccd0d4; border: none; margin: 16px 0;">');
         }
 
         let html = '<div>';
@@ -39,7 +39,7 @@ export class SeoFormView {
         html += `<p><strong>Description:</strong> ${seoData.description || 'N/A'}</p>`;
         html += `<p><strong>Short Description:</strong> ${seoData.shortDescription || 'N/A'}</p>`;
         html += `<p><strong>Keywords:</strong> ${seoData.keywords || 'N/A'}</p>`;
-        html += '<hr>';
+        html += '<hr style="height: 1px; background-color: #ccd0d4; border: none; margin: 16px 0;">';
         html += '<h4>Summary</h4>';
         html += `<p>${seoData.summary || 'No summary provided.'}</p>`;
         html += '</div>';
@@ -52,7 +52,7 @@ export class SeoFormView {
         this.removeLoadingIndicator();
 
         if (!this.answerContainer.is(':empty')) {
-            this.answerContainer.append('<hr style="margin: 16px 0;">');
+            this.answerContainer.append('<hr style="height: 1px; background-color: #ccd0d4; border: none; margin: 16px 0;">');
         }
 
         this.answerContainer.append(`<div style="color: red;"><strong>Error:</strong> ${message}</div>`);
