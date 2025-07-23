@@ -17,7 +17,7 @@ use WooSimpleSeoAgent\Controller\Rest\RestControllerInterface;
  *
  * @package WooSimpleSeoAgent\Controller\Rest
  */
-readonly class AgentSeoController implements RestControllerInterface
+class AgentSeoController extends AbstractRestController
 {
 
     public function __construct(private SeoAgent $seoAgent, private JsonExtractor $jsonExtractor)
@@ -37,10 +37,8 @@ readonly class AgentSeoController implements RestControllerInterface
             [
                 'methods' => 'POST',
                 'callback' => [$this, 'handleGenerateRequest'],
-                'permission_callback' => '__return_true'
-                /*'permission_callback' => static function () {
-                    return current_user_can('edit_posts');
-                }*/
+                //'permission_callback' => '__return_true'
+                'permission_callback' => [$this, 'checkPermissions']
             ]
         );
     }
@@ -50,40 +48,47 @@ readonly class AgentSeoController implements RestControllerInterface
      *
      * @param WP_REST_Request $request The request object.
      *
-     * @return WP_REST_Response|WP_Error
+     * @return WP_REST_Response
      * @throws \Throwable
      */
-    public function handleGenerateRequest(WP_REST_Request $request): WP_REST_Response|WP_Error
+    public function handleGenerateRequest(WP_REST_Request $request): WP_REST_Response
     {
         $productId = $request->get_param('product_id');
 
         if (empty($productId) || !is_numeric($productId) || (int)$productId <= 0) {
-            return new WP_Error(
-                'invalid_product_id',
-                'A valid Product ID is required.',
-                ['status' => 400]
+            return $this->errorResponse(
+                __('Invalid product ID', 'woo-simple-seo-agent'),
+                400
             );
         }
 
-        $requestMessage = $request->get_param('request_message');
-        $requestMessage = $requestMessage ? sanitize_text_field($requestMessage) : '';
+        $productId = (int)$productId;
+        $product = wc_get_product($productId);
 
-        $prompt = "Need SEO optimization for product id {$productId}";
-        if (!empty($requestMessage)) {
-            $prompt .= ". Additional request: {$requestMessage}";
+        if (!$product) {
+            return $this->errorResponse(
+                __('Product not found', 'woo-simple-seo-agent'),
+                404
+            );
         }
 
         try {
-            $seo = $this->seoAgent->chat(
-                new UserMessage($prompt)
+            $result = $this->seoAgent->generate($product);
+            $structuredResult = $this->jsonExtractor->extract($result);
+
+            if (empty($structuredResult)) {
+                return $this->errorResponse(
+                    __('Invalid response format from AI', 'woo-simple-seo-agent'),
+                    500
+                );
+            }
+
+            return $this->successResponse($structuredResult);
+        } catch (\Exception $e) {
+            return $this->errorResponse(
+                $e->getMessage(),
+                500
             );
-
-            $seoJson = $this->jsonExtractor->getJson($seo->getContent());
-            $seoObject = json_decode($seoJson, true, 512, JSON_THROW_ON_ERROR);
-
-            return new WP_REST_Response(['seo' => $seoObject], 200);
-        } catch (\JsonException $e) {
-            return new WP_Error('json_error', $e->getMessage(), ['status' => 500]);
         }
     }
 }
