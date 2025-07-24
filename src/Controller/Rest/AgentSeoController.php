@@ -38,7 +38,6 @@ class AgentSeoController extends AbstractRestController
             [
                 'methods' => 'POST',
                 'callback' => [$this, 'handleGenerateRequest'],
-                //'permission_callback' => '__return_true'
                 'permission_callback' => [$this, 'checkPermissions']
             ]
         );
@@ -83,7 +82,7 @@ class AgentSeoController extends AbstractRestController
 
         try {
             $seo = $this->seoAgent->chat(
-                new UserMessage($prompt)
+                new UserMessage(apply_filters('wssa_agent_prompt', $prompt, $productId))
             );
 
             $seoJson = $this->jsonExtractor->getJson($seo->getContent());

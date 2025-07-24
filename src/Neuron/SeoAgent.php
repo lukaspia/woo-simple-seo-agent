@@ -54,24 +54,28 @@ class SeoAgent extends Agent
      */
     public function instructions(): string
     {
+        $steps = [
+            "Improve seo elements if needed.",
+            'Change only elements that are indicate as "Additional request". If element is not mentioned return empty ("").',
+            //"Take into account requirements of GEO (Generative Engine Optimization) in you tasks.",
+            //"Use the tools you have available to retrieve the product data you need. If no tools are available, ask user for data.",
+            //"Analise provided data.",
+            //"Depends on data, evaluate if title, descriptions, keywords and short description are good for SEO, and possibly propose new version of it.",
+            //"If some data are not provided, and you have no tools to retrieve it, ignore it or propose output for this data.",
+            //"In description you can use html tags if needed (for example to highlight important words).",
+            //"Ignore tasks that are not related to SEO and process of retrieves data that you require to do SEO tasks.",
+            "Write the summary of the evaluation, where you mention the possible improvements or other messages for user.",
+        ];
+
+        $output = [
+            //"Write a evaluation summary with possible improvements as a list.",
+            "Return everything as json with fields: title, description, keywords, shortDescription and summary. That part of output write in pl_PL."
+        ];
+
         return (string)new SystemPrompt(
             background: ["You are an AI Agent specialized in SEO."],
-            steps:      [
-                            "Improve seo elements if needed.",
-                            'Change only elements that are indicate as "Additional request". If element is not mentioned return empty ("").',
-                            //"Take into account requirements of GEO (Generative Engine Optimization) in you tasks.",
-                            //"Use the tools you have available to retrieve the product data you need. If no tools are available, ask user for data.",
-                            //"Analise provided data.",
-                            //"Depends on data, evaluate if title, descriptions, keywords and short description are good for SEO, and possibly propose new version of it.",
-                            //"If some data are not provided, and you have no tools to retrieve it, ignore it or propose output for this data.",
-                            //"In description you can use html tags if needed (for example to highlight important words).",
-                            //"Ignore tasks that are not related to SEO and process of retrieves data that you require to do SEO tasks.",
-                            "Write the summary of the evaluation, where you mention the possible improvements or other messages for user.",
-                        ],
-            output:     [
-                            //"Write a evaluation summary with possible improvements as a list.",
-                            "Return everything as json with fields: title, description, keywords, shortDescription and summary. That part of output write in pl_PL."
-                        ]
+            steps:      apply_filters('wssa_agent_steps', $steps),
+            output:     apply_filters('wssa_agent_output', $output)
         );
     }
 
@@ -83,7 +87,7 @@ class SeoAgent extends Agent
         return [
             Tool::make(
                 'get_product_data',
-                'Get product data from database.',
+                'Use this tool to retrieve product data if there are no provided.',
             )->addProperty(
                 new ToolProperty(
                     name:        'productId',
