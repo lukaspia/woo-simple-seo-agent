@@ -1,6 +1,6 @@
 export interface WpLocalizedParams {
     rest_url: string;
-    rest_product_meta_url: any;
+    rest_product_meta_url: Record<string, string>;
     nonce: string;
     product_id: number;
 }
