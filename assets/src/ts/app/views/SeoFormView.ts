@@ -38,7 +38,7 @@ export class SeoFormView {
         this.removeLoadingIndicator();
 
         if (!this.answerContainer.is(':empty')) {
-            this.answerContainer.append('<hr style="height: 3px; background-color: #ccd0d4; border: none; margin: 16px 0;">');
+            this.renderSeparator();
         }
 
         let suggestionsHtml = '';
@@ -74,9 +74,7 @@ export class SeoFormView {
     public renderError(message: string): void {
         this.removeLoadingIndicator();
 
-        if (!this.answerContainer.is(':empty')) {
-            this.answerContainer.append('<hr style="height: 1px; background-color: #ccd0d4; border: none; margin: 16px 0;">');
-        }
+        this.renderSeparator();
 
         this.answerContainer.append(`<div style="color: red;"><strong>Error:</strong> ${message}</div>`);
         this.scrollToBottom();
@@ -84,16 +82,27 @@ export class SeoFormView {
 
     public renderSuccess(message: string): void {
         this.removeLoadingIndicator();
+
+        this.renderSeparator();
+
         this.answerContainer.append(`<div style="color: green;"><strong>Success:</strong> ${message}</div>`);
         this.scrollToBottom();
+    }
+
+    public renderWorkInProgress(message: string): void {
+        const loadingHtml = `<p class="wssa-loading-indicator"><em>${message}</em></p>`;
+        this.answerContainer.append(loadingHtml);
+        this.scrollToBottom();
+    }
+
+    public renderSeparator(): void {
+        this.answerContainer.append('<hr style="height: 3px; background-color: #ccd0d4; border: none; margin: 16px 0;">');
     }
 
     public toggleLoading(isLoading: boolean): void {
         this.sendButton.prop('disabled', isLoading);
         if (isLoading) {
-            const loadingHtml = '<p class="wssa-loading-indicator"><em>Generating SEO data, please wait...</em></p>';
-            this.answerContainer.append(loadingHtml);
-            this.scrollToBottom();
+            this.renderWorkInProgress('Generating SEO data, please wait...');
         }
     }
 
@@ -102,9 +111,7 @@ export class SeoFormView {
         this.answerContainer.find('.accept-all-changes').prop('disabled', isImplementing);
 
         if (isImplementing) {
-            const implementingHtml = '<p class="wssa-loading-indicator"><em>Implementing SEO data, please wait...</em></p>';
-            this.answerContainer.append(implementingHtml);
-            this.scrollToBottom();
+            this.renderWorkInProgress('Implementing SEO data, please wait...');
         }
     }
 

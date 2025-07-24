@@ -5,7 +5,6 @@ declare const wssa_params: WpLocalizedParams;
 
 class ProductService {
     public updateProductMeta(type: string, value: string): Promise<ApiResponse> {
-
         if (!wssa_params.rest_product_meta_url['update_' + type]) {
             throw new Error('No REST endpoint found for type: ' + type);
         }

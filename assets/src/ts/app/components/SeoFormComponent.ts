@@ -34,9 +34,6 @@ export class SeoFormComponent {
     }
 
     private async handleAcceptClick(type: string, value: string): Promise<void> {
-        console.log('Accept button clicked for type:', type);
-        console.log('Accept button clicked for value:', value);
-
         this.view.toggleImplementing(true);
 
         try {
