@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { SeoData } from '../../types';
+import {agentData, SeoData} from '../../types';
 
 export class SeoFormView {
     private sendButton: JQuery;
@@ -34,7 +34,10 @@ export class SeoFormView {
         return requestMessage;
     }
 
-    public renderResults(seoData: SeoData): void {
+    public renderResults(data: agentData): void {
+        const seoData: SeoData = data.seoData;
+        const prompt: string = data.prompt;
+
         this.removeLoadingIndicator();
 
         if (!this.answerContainer.is(':empty')) {
@@ -57,6 +60,7 @@ export class SeoFormView {
         }
 
         let html = '<div>';
+        html += '<p style="color: #999;"><em>User request: ' + prompt + '</em></p>';
         if (suggestionsHtml) {
             html += '<h4>SEO Suggestions</h4>';
             html += suggestionsHtml;

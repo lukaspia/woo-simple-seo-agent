@@ -1,10 +1,10 @@
 import $ from 'jquery';
-import { SeoData, WpLocalizedParams, ApiError } from '../../types';
+import {WpLocalizedParams, ApiError, ApiResponse} from '../../types';
 
 declare const wssa_params: WpLocalizedParams;
 
 class AgentService {
-    public generateSeo(requestMessage: string): Promise<SeoData> {
+    public generateSeo(requestMessage: string): Promise<ApiResponse> {
         return new Promise((resolve, reject) => {
             $.ajax({
                 url: wssa_params.rest_url,
@@ -17,8 +17,8 @@ class AgentService {
                     request_message: requestMessage,
                 }
             }).done((response) => {
-                if (response && response.data) {
-                    resolve(response.data as SeoData);
+                if (response) {
+                    resolve(response as ApiResponse);
                 } else {
                     reject({ message: 'Invalid API response structure.' } as ApiError);
                 }

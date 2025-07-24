@@ -53,7 +53,7 @@ class AgentSeoController extends AbstractRestController
      * @throws \Throwable
      */
     public function handleGenerateRequest(WP_REST_Request $request): WP_REST_Response
-    {;
+    {
         $productId = $request->get_param('product_id');
 
         if (empty($productId) || !is_numeric($productId) || (int)$productId <= 0) {
@@ -96,7 +96,7 @@ class AgentSeoController extends AbstractRestController
                 );
             }
 
-            return $this->successResponse($structuredResult);
+            return $this->successResponse(['seoData' => $structuredResult, 'prompt' => $prompt]);
         } catch (\Exception $e) {
             return $this->errorResponse(
                 $e->getMessage(),
