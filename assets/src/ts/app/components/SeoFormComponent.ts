@@ -35,5 +35,7 @@ export class SeoFormComponent {
     private handleAcceptClick(type: string, value: string): void {
         console.log('Accept button clicked for type:', type);
         console.log('Accept button clicked for value:', value);
+
+        this.view.toggleImplementing(true);
     }
 }

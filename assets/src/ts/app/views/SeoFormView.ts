@@ -59,7 +59,7 @@ export class SeoFormView {
         if (suggestionsHtml) {
             html += '<h4>SEO Suggestions</h4>';
             html += suggestionsHtml;
-            html += '<div class="button accept-all-changes" style="display: inline-flex; align-items: center; text-align: center; gap: 5px">Accept all<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-check" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3.854 2.146a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 3.293l1.146-1.147a.5.5 0 0 1 .708 0m0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 7.293l1.146-1.147a.5.5 0 0 1 .708 0m0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0"/></svg></div>';
+            html += '<button class="button accept-all-changes" style="display: inline-flex; align-items: center; text-align: center; gap: 5px">Accept all<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-check" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3.854 2.146a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 3.293l1.146-1.147a.5.5 0 0 1 .708 0m0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 7.293l1.146-1.147a.5.5 0 0 1 .708 0m0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0"/></svg></button>';
             html += '<hr style="height: 1px; background-color: #ccd0d4; border: none; margin: 16px 0;">';
         }
 
@@ -87,6 +87,17 @@ export class SeoFormView {
         if (isLoading) {
             const loadingHtml = '<p class="wssa-loading-indicator"><em>Generating SEO data, please wait...</em></p>';
             this.answerContainer.append(loadingHtml);
+            this.scrollToBottom();
+        }
+    }
+
+    public toggleImplementing(isImplementing: boolean): void {
+        this.answerContainer.find('.accept-changes').prop('disabled', isImplementing);
+        this.answerContainer.find('.accept-all-changes').prop('disabled', isImplementing);
+
+        if (isImplementing) {
+            const implementingHtml = '<p class="wssa-loading-indicator"><em>Implementing SEO data, please wait...</em></p>';
+            this.answerContainer.append(implementingHtml);
             this.scrollToBottom();
         }
     }
@@ -134,6 +145,6 @@ export class SeoFormView {
     }
 
     private getAcceptButton(text: string, type: string): string {
-        return '<div class="button accept-changes" data-text="' + text + '" data-type="' + type + '" style="display: inline-flex; align-items: center; gap: 5px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16"><path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0"/><path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"/></svg></div>';
+        return '<button class="button accept-changes" data-text="' + text + '" data-type="' + type + '" style="display: inline-flex; align-items: center; gap: 5px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16"><path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0"/><path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"/></svg></button>';
     }
 }
