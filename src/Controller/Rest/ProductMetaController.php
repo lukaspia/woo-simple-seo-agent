@@ -9,11 +9,17 @@ use WP_REST_Response;
 
 class ProductMetaController extends AbstractRestController
 {
+    public const UPDATE_TITLE_URL = '/product/update-title';
+    public const UPDATE_DESCRIPTION_URL = '/product/update-description';
+    public const UPDATE_SHORT_DESCRIPTION_URL = '/product/update-short-description';
+    public const UPDATE_KEYWORDS_URL = '/product/update-keywords';
+
+
     public function registerRoutes(string $namespace): void
     {
         register_rest_route(
             $namespace,
-            '/product/update-title',
+            self::UPDATE_TITLE_URL,
             [
                 'methods' => 'POST',
                 'callback' => [$this, 'updateTitle'],
@@ -24,7 +30,7 @@ class ProductMetaController extends AbstractRestController
                         'validate_callback' => [$this, 'validateProductId'],
                         'sanitize_callback' => 'absint',
                     ],
-                    'title' => [
+                    'value' => [
                         'required' => true,
                         'sanitize_callback' => 'sanitize_text_field',
                     ],
@@ -34,7 +40,7 @@ class ProductMetaController extends AbstractRestController
 
         register_rest_route(
             $namespace,
-            '/product/update-description',
+            self::UPDATE_DESCRIPTION_URL,
             [
                 'methods' => 'POST',
                 'callback' => [$this, 'updateDescription'],
@@ -45,7 +51,7 @@ class ProductMetaController extends AbstractRestController
                         'validate_callback' => [$this, 'validateProductId'],
                         'sanitize_callback' => 'absint',
                     ],
-                    'description' => [
+                    'value' => [
                         'required' => true,
                         'sanitize_callback' => 'wp_kses_post',
                     ],
@@ -55,7 +61,7 @@ class ProductMetaController extends AbstractRestController
 
         register_rest_route(
             $namespace,
-            '/product/update-short-description',
+            self::UPDATE_SHORT_DESCRIPTION_URL,
             [
                 'methods' => 'POST',
                 'callback' => [$this, 'updateShortDescription'],
@@ -66,7 +72,7 @@ class ProductMetaController extends AbstractRestController
                         'validate_callback' => [$this, 'validateProductId'],
                         'sanitize_callback' => 'absint',
                     ],
-                    'short_description' => [
+                    'value' => [
                         'required' => true,
                         'sanitize_callback' => 'wp_kses_post',
                     ],
@@ -76,7 +82,7 @@ class ProductMetaController extends AbstractRestController
 
         register_rest_route(
             $namespace,
-            '/product/update-keywords',
+            self::UPDATE_KEYWORDS_URL,
             [
                 'methods' => 'POST',
                 'callback' => [$this, 'updateKeywords'],
@@ -87,7 +93,7 @@ class ProductMetaController extends AbstractRestController
                         'validate_callback' => [$this, 'validateProductId'],
                         'sanitize_callback' => 'absint',
                     ],
-                    'keywords' => [
+                    'value' => [
                         'required' => true,
                         'sanitize_callback' => 'sanitize_text_field',
                     ],
@@ -99,7 +105,7 @@ class ProductMetaController extends AbstractRestController
     public function updateTitle(WP_REST_Request $request): WP_REST_Response
     {
         $productId = $request->get_param('product_id');
-        $title = $request->get_param('title');
+        $title = $request->get_param('value');
 
         if (!get_post($productId)) {
             return $this->errorResponse('Product not found', 404);
@@ -126,7 +132,7 @@ class ProductMetaController extends AbstractRestController
     public function updateDescription(WP_REST_Request $request): WP_REST_Response
     {
         $productId = $request->get_param('product_id');
-        $description = $request->get_param('description');
+        $description = $request->get_param('value');
 
         if (!get_post($productId)) {
             return $this->errorResponse('Product not found', 404);
@@ -153,7 +159,7 @@ class ProductMetaController extends AbstractRestController
     public function updateShortDescription(WP_REST_Request $request): WP_REST_Response
     {
         $productId = $request->get_param('product_id');
-        $shortDescription = $request->get_param('short_description');
+        $shortDescription = $request->get_param('value');
 
         if (!get_post($productId)) {
             return $this->errorResponse('Product not found', 404);
@@ -180,7 +186,7 @@ class ProductMetaController extends AbstractRestController
     public function updateKeywords(WP_REST_Request $request): WP_REST_Response
     {
         $productId = $request->get_param('product_id');
-        $keywords = $request->get_param('keywords');
+        $keywords = $request->get_param('value');
 
         if (!get_post($productId)) {
             return $this->errorResponse('Product not found', 404);

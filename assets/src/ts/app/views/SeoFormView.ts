@@ -49,7 +49,7 @@ export class SeoFormView {
             suggestionsHtml += `<p><strong>Description:</strong> ${seoData.description} ${this.getAcceptButton(seoData.description, 'description')}</p>`;
         }
         if (seoData.shortDescription) {
-            suggestionsHtml += `<p><strong>Short Description:</strong> ${seoData.shortDescription} ${this.getAcceptButton(seoData.shortDescription, 'shortDescription')}</p>`;
+            suggestionsHtml += `<p><strong>Short Description:</strong> ${seoData.shortDescription} ${this.getAcceptButton(seoData.shortDescription, 'short_description')}</p>`;
         }
         if (seoData.keywords) {
             suggestionsHtml += `<p><strong>Keywords:</strong> ${seoData.keywords} ${this.getAcceptButton(seoData.keywords, 'keywords')}</p>`;
@@ -79,6 +79,12 @@ export class SeoFormView {
         }
 
         this.answerContainer.append(`<div style="color: red;"><strong>Error:</strong> ${message}</div>`);
+        this.scrollToBottom();
+    }
+
+    public renderSuccess(message: string): void {
+        this.removeLoadingIndicator();
+        this.answerContainer.append(`<div style="color: green;"><strong>Success:</strong> ${message}</div>`);
         this.scrollToBottom();
     }
 

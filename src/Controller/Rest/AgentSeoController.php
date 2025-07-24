@@ -19,6 +19,7 @@ use WooSimpleSeoAgent\Controller\Rest\RestControllerInterface;
  */
 class AgentSeoController extends AbstractRestController
 {
+    public const GENERATE_SEO_URL = '/agent/generate';
 
     public function __construct(private SeoAgent $seoAgent, private JsonExtractor $jsonExtractor)
     {
@@ -33,7 +34,7 @@ class AgentSeoController extends AbstractRestController
     {
         register_rest_route(
             $namespace,
-            '/agent/generate',
+            self::GENERATE_SEO_URL,
             [
                 'methods' => 'POST',
                 'callback' => [$this, 'handleGenerateRequest'],
@@ -53,6 +54,14 @@ class AgentSeoController extends AbstractRestController
      */
     public function handleGenerateRequest(WP_REST_Request $request): WP_REST_Response
     {
+        return $this->successResponse([
+                                          'title' => 'Razer Naga Trinity',
+                                          'description' => 'Razer Naga Trinity z najbardziej zaawansowanym na świecie sensorem optycznym 5G o rzeczywistej rozdzielczości 16 000 DPI to mysz zoptymalizowana pod kątem precyzji i szybkości. Umożliwia wykonywanie szybkich ruchów, precyzyjne rzucanie zaklęć oraz wycofywanie się z lini ognia podczas zaciętych walk.',
+                                          'shortDescription' => 'Razer Naga Trinity z najbardziej zaawansowanym na świecie sensorem',
+                                          'keywords' => 'Razer, Naga, Trinity',
+                                            'summary' => 'Zaproponowane ulepszenie seo dla Razer Naga Trinity.',
+                                      ]);
+
         $productId = $request->get_param('product_id');
 
         if (empty($productId) || !is_numeric($productId) || (int)$productId <= 0) {

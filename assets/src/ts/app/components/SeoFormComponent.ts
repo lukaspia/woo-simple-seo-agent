@@ -1,4 +1,5 @@
 import { agentService } from '../services/AgentService';
+import {productService} from "../services/ProductService";
 import { SeoFormView } from '../views/SeoFormView';
 
 export class SeoFormComponent {
@@ -32,10 +33,23 @@ export class SeoFormComponent {
         }
     }
 
-    private handleAcceptClick(type: string, value: string): void {
+    private async handleAcceptClick(type: string, value: string): Promise<void> {
         console.log('Accept button clicked for type:', type);
         console.log('Accept button clicked for value:', value);
 
         this.view.toggleImplementing(true);
+
+        try {
+            const response = await productService.updateProductMeta(type, value);
+            if(!response.success) {
+                throw new Error(response.message);
+            }
+
+            this.view.renderSuccess(response.message);
+        } catch (error: any) {
+            this.view.renderError(error.message || 'An unknown error occurred.');
+        } finally {
+            this.view.toggleImplementing(false);
+        }
     }
 }

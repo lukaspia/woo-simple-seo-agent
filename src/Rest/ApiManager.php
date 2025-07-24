@@ -16,7 +16,7 @@ use WooSimpleSeoAgent\Neuron\SeoAgent;
  */
 class ApiManager
 {
-    private const NAMESPACE = 'wssa/v1';
+    public const NAMESPACE = 'wssa/v1';
 
     /**
      * Initialize the API manager.
