@@ -11,6 +11,10 @@ if (!defined('ABSPATH')) {
             <label for="wssa_seo_evaluation"><?php esc_html_e('Make evaluation', 'woo-simple-seo-agent'); ?></label>
         </p>
         <p>
+            <input type="checkbox" id="wssa_seo_title" name="wssa_seo_title" checked />
+            <label for="wssa_seo_description"><?php esc_html_e('Prepare title', 'woo-simple-seo-agent'); ?></label>
+        </p>
+        <p>
             <input type="checkbox" id="wssa_seo_description" name="wssa_seo_description" checked />
             <label for="wssa_seo_description"><?php esc_html_e('Prepare description', 'woo-simple-seo-agent'); ?></label>
         </p>

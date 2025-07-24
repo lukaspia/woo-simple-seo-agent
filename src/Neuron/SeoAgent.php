@@ -35,7 +35,7 @@ class SeoAgent extends Agent
         }
 
         $apiKey = $config['gemini']['api_key'] ?? '';
-        $model = $config['gemini']['model'] ?? 'gemini-2.0-flash';
+        $model = $config['gemini']['model'] ?? 'gemini-2.5-flash';
 
         if (empty($apiKey) || $apiKey === 'YOUR_GEMINI_API_KEY_HERE') {
             throw new \RuntimeException(
@@ -57,6 +57,7 @@ class SeoAgent extends Agent
         $steps = [
             "Improve seo elements if needed.",
             'Change only elements that are indicate as "Additional request". If element is not mentioned return empty ("").',
+            "In case you do something with keywords/tags, return maximum of 4 keywords.",
             //"Take into account requirements of GEO (Generative Engine Optimization) in you tasks.",
             //"Use the tools you have available to retrieve the product data you need. If no tools are available, ask user for data.",
             //"Analise provided data.",
