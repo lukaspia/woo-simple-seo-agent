@@ -72,20 +72,19 @@ export class SeoFormView {
     }
 
     public renderError(message: string): void {
-        this.removeLoadingIndicator();
-
-        this.renderSeparator();
-
-        this.answerContainer.append(`<div style="color: red;"><strong>Error:</strong> ${message}</div>`);
-        this.scrollToBottom();
+        this.renderMessage(message, 'Error', 'red');
     }
 
     public renderSuccess(message: string): void {
+        this.renderMessage(message, 'Success', 'green');
+    }
+
+    public renderMessage(message: string, type: string, color: string): void {
         this.removeLoadingIndicator();
 
         this.renderSeparator();
 
-        this.answerContainer.append(`<div style="color: green;"><strong>Success:</strong> ${message}</div>`);
+        this.answerContainer.append(`<div style="color: ${color};"><strong>${type}:</strong> ${message}</div>`);
         this.scrollToBottom();
     }
 
