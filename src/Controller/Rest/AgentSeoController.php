@@ -53,15 +53,7 @@ class AgentSeoController extends AbstractRestController
      * @throws \Throwable
      */
     public function handleGenerateRequest(WP_REST_Request $request): WP_REST_Response
-    {
-        return $this->successResponse([
-                                          'title' => 'Razer Naga Trinity',
-                                          'description' => '3Razer Naga Trinity z najbardziej zaawansowanym na świecie sensorem optycznym 5G o rzeczywistej rozdzielczości 16 000 DPI to mysz zoptymalizowana pod kątem precyzji i szybkości. Umożliwia wykonywanie szybkich ruchów, precyzyjne rzucanie zaklęć oraz wycofywanie się z lini ognia podczas zaciętych walk.',
-                                          'shortDescription' => '3Razer Naga Trinity z najbardziej zaawansowanym na świecie sensorem',
-                                          'keywords' => '3Razer, Naga, Trinity',
-                                            'summary' => 'Zaproponowane ulepszenie seo dla Razer Naga Trinity.',
-                                      ]);
-
+    {;
         $productId = $request->get_param('product_id');
 
         if (empty($productId) || !is_numeric($productId) || (int)$productId <= 0) {
