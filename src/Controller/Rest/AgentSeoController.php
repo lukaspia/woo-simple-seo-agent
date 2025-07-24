@@ -56,8 +56,8 @@ class AgentSeoController extends AbstractRestController
     {
         return $this->successResponse([
                                           'title' => 'Razer Naga Trinity',
-                                          'description' => 'Razer Naga Trinity z najbardziej zaawansowanym na świecie sensorem optycznym 5G o rzeczywistej rozdzielczości 16 000 DPI to mysz zoptymalizowana pod kątem precyzji i szybkości. Umożliwia wykonywanie szybkich ruchów, precyzyjne rzucanie zaklęć oraz wycofywanie się z lini ognia podczas zaciętych walk.',
-                                          'shortDescription' => 'Razer Naga Trinity z najbardziej zaawansowanym na świecie sensorem',
+                                          'description' => '2Razer Naga Trinity z najbardziej zaawansowanym na świecie sensorem optycznym 5G o rzeczywistej rozdzielczości 16 000 DPI to mysz zoptymalizowana pod kątem precyzji i szybkości. Umożliwia wykonywanie szybkich ruchów, precyzyjne rzucanie zaklęć oraz wycofywanie się z lini ognia podczas zaciętych walk.',
+                                          'shortDescription' => '2Razer Naga Trinity z najbardziej zaawansowanym na świecie sensorem',
                                           'keywords' => 'Razer, Naga, Trinity',
                                             'summary' => 'Zaproponowane ulepszenie seo dla Razer Naga Trinity.',
                                       ]);

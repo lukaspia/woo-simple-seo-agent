@@ -1,12 +1,15 @@
 import { agentService } from '../services/AgentService';
 import {productService} from "../services/ProductService";
 import { SeoFormView } from '../views/SeoFormView';
+import { ProductView } from "../views/ProductView";
 
 export class SeoFormComponent {
     private view: SeoFormView;
+    private product: ProductView;
 
     constructor() {
         this.view = new SeoFormView();
+        this.product = new ProductView();
     }
 
     public init(): void {
@@ -42,6 +45,7 @@ export class SeoFormComponent {
                 throw new Error(response.message);
             }
 
+            this.product.updateProductMeta(type, value);
             this.view.renderSuccess(response.message);
         } catch (error: any) {
             this.view.renderError(error.message || 'An unknown error occurred.');
