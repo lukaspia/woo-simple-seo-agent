@@ -58,7 +58,7 @@ class SeoAgent extends Agent
             background: ["You are an AI Agent specialized in SEO."],
             steps:      [
                             "Improve seo elements if needed.",
-                            "Use the same language as provided data are written. Do not translate.",
+                            'Change only elements that are indicate as "Additional request". If element is not mentioned return empty ("").',
                             //"Take into account requirements of GEO (Generative Engine Optimization) in you tasks.",
                             //"Use the tools you have available to retrieve the product data you need. If no tools are available, ask user for data.",
                             //"Analise provided data.",
@@ -70,7 +70,7 @@ class SeoAgent extends Agent
                         ],
             output:     [
                             //"Write a evaluation summary with possible improvements as a list.",
-                            "Return everything as json with fields title, description, keywords, shortDescription and summary."
+                            "Return everything as json with fields: title, description, keywords, shortDescription and summary. That part of output write in pl_PL."
                         ]
         );
     }
