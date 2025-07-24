@@ -152,6 +152,10 @@ export class SeoFormView {
         });
     }
 
+    public clearConsole(): void {
+        this.consoleTextarea.val('');
+    }
+
     private removeLoadingIndicator(): void {
         this.answerContainer.find('.wssa-loading-indicator').remove();
     }

@@ -24,6 +24,7 @@ export class SeoFormComponent {
             return;
         }
 
+        this.view.clearConsole();
         this.view.toggleLoading(true);
 
         try {
