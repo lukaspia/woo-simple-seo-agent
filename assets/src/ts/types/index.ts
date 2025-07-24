@@ -13,11 +13,6 @@ export interface SeoData {
     summary?: string;
 }
 
-export interface agentData {
-    seoData: SeoData;
-    prompt: string;
-}
-
 export interface ApiResponse {
     success: string;
     data: any;
