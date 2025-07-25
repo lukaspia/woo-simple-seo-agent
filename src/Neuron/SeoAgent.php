@@ -35,7 +35,7 @@ class SeoAgent extends Agent
         }
 
         $apiKey = $config['gemini']['api_key'] ?? '';
-        $model = $config['gemini']['model'] ?? 'gemini-2.0-flash';
+        $model = $config['gemini']['model'] ?? 'gemini-2.5-flash';
 
         if (empty($apiKey) || $apiKey === 'YOUR_GEMINI_API_KEY_HERE') {
             throw new \RuntimeException(
@@ -54,24 +54,24 @@ class SeoAgent extends Agent
      */
     public function instructions(): string
     {
+        $steps = [
+            'Improve seo elements if needed. If not, leave them empty (as their value use "").',
+            'Change only elements that are indicate as "Additional request". If element is not mentioned in "Additional request" return them empty (as their value use "").',
+            "Take into account requirements of GEO (Generative Engine Optimization) in you tasks.",
+            "In case you do something with keywords/tags, return maximum of 4 keywords.",
+            "In case you do something with description, you can use html tags if needed (for example to highlight important words or list things).",
+            "Write the summary of the evaluation, where you made the possible improvements or add other messages for user. Except simple text, you can use html tags to list things. You can propose further tasks and improvements if needed.",
+        ];
+
+        $output = [
+            "Return everything as json with fields: title, description, keywords, shortDescription and summary. That part of output write in " . get_locale() . '.',
+            'If you dont change anything in some specific filed, leave it empty (as their value use ""). Remember that filed not mentioned in "Additional request" should be empty (as their value use "").',
+        ];
+
         return (string)new SystemPrompt(
             background: ["You are an AI Agent specialized in SEO."],
-            steps:      [
-                            "Improve seo elements if needed.",
-                            "Use the same language as provided data are written. Do not translate.",
-                            //"Take into account requirements of GEO (Generative Engine Optimization) in you tasks.",
-                            //"Use the tools you have available to retrieve the product data you need. If no tools are available, ask user for data.",
-                            //"Analise provided data.",
-                            //"Depends on data, evaluate if title, descriptions, keywords and short description are good for SEO, and possibly propose new version of it.",
-                            //"If some data are not provided, and you have no tools to retrieve it, ignore it or propose output for this data.",
-                            //"In description you can use html tags if needed (for example to highlight important words).",
-                            //"Ignore tasks that are not related to SEO and process of retrieves data that you require to do SEO tasks.",
-                            "Write the summary of the evaluation, where you mention the possible improvements or other messages for user.",
-                        ],
-            output:     [
-                            //"Write a evaluation summary with possible improvements as a list.",
-                            "Return everything as json with fields title, description, keywords, shortDescription and summary."
-                        ]
+            steps:      apply_filters('wssa_agent_steps', $steps),
+            output:     apply_filters('wssa_agent_output', $output)
         );
     }
 
@@ -83,7 +83,7 @@ class SeoAgent extends Agent
         return [
             Tool::make(
                 'get_product_data',
-                'Get product data from database.',
+                'Use this tool to retrieve product data if there are no provided.',
             )->addProperty(
                 new ToolProperty(
                     name:        'productId',

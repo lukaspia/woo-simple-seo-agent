@@ -11,6 +11,10 @@ if (!defined('ABSPATH')) {
             <label for="wssa_seo_evaluation"><?php esc_html_e('Make evaluation', 'woo-simple-seo-agent'); ?></label>
         </p>
         <p>
+            <input type="checkbox" id="wssa_seo_title" name="wssa_seo_title" checked />
+            <label for="wssa_seo_title"><?php esc_html_e('Prepare title', 'woo-simple-seo-agent'); ?></label>
+        </p>
+        <p>
             <input type="checkbox" id="wssa_seo_description" name="wssa_seo_description" checked />
             <label for="wssa_seo_description"><?php esc_html_e('Prepare description', 'woo-simple-seo-agent'); ?></label>
         </p>
@@ -23,7 +27,7 @@ if (!defined('ABSPATH')) {
             <label for="wssa_seo_tags" name="wssa_seo_tags" /><?php esc_html_e('Make tags', 'woo-simple-seo-agent'); ?></label>
         </p>
         <p>
-            <label for="wssa_agent_console"><?php esc_html_e('Agent console', 'woo-simple-seo-agent'); ?></label>
+            <label for="wssa_agent_console"><?php esc_html_e('Agent console', 'woo-simple-seo-agent'); ?></label> <?= wc_help_tip('It allows you to include additional information for the agent. You can specify what they should pay particular attention to or give the generated content a specific character.') ?>
             <textarea id="wssa_agent_console" name="wssa_agent_console" rows="3" style="width: 100%;" placeholder="<?php esc_html_e('Add additional information for the agent if needed.', 'woo-simple-seo-agent'); ?>"></textarea>
         </p>
         <p>
