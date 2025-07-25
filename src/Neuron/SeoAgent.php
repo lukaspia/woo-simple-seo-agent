@@ -55,21 +55,15 @@ class SeoAgent extends Agent
     public function instructions(): string
     {
         $steps = [
-            "Improve seo elements if needed.",
-            'Change only elements that are indicate as "Additional request". If element is not mentioned return empty ("").',
+            'Improve seo elements if needed. If not, leave them empty (as their value use "").',
+            'Change only elements that are indicate as "Additional request". If element is not mentioned in "Additional request" return them empty (as their value use "").',
+            "Take into account requirements of GEO (Generative Engine Optimization) in you tasks.",
             "In case you do something with keywords/tags, return maximum of 4 keywords.",
-            //"Take into account requirements of GEO (Generative Engine Optimization) in you tasks.",
-            //"Use the tools you have available to retrieve the product data you need. If no tools are available, ask user for data.",
-            //"Analise provided data.",
-            //"Depends on data, evaluate if title, descriptions, keywords and short description are good for SEO, and possibly propose new version of it.",
-            //"If some data are not provided, and you have no tools to retrieve it, ignore it or propose output for this data.",
-            //"In description you can use html tags if needed (for example to highlight important words).",
-            //"Ignore tasks that are not related to SEO and process of retrieves data that you require to do SEO tasks.",
-            "Write the summary of the evaluation, where you mention the possible improvements or other messages for user.",
+            "In case you do something with description, you can use html tags if needed (for example to highlight important words or list things).",
+            "Write the summary of the evaluation, where you made the possible improvements or add other messages for user. Except simple text, you can use html tags to list things. You can propose further tasks and improvements if needed.",
         ];
 
         $output = [
-            //"Write a evaluation summary with possible improvements as a list.",
             "Return everything as json with fields: title, description, keywords, shortDescription and summary. That part of output write in pl_PL."
         ];
 
