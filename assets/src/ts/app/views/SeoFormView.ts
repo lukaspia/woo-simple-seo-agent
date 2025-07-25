@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { SeoData } from '../../types';
+import {agentData, SeoData} from '../../types';
 
 export class SeoFormView {
     private sendButton: JQuery;
@@ -7,6 +7,7 @@ export class SeoFormView {
     private consoleTextarea: JQuery;
     private checkboxes: JQuery;
     private acceptCallback: ((type: string, value: string) => void) | null = null;
+    private conversationHistory: string[] = [];
 
     constructor() {
         this.sendButton = $('#wssa-send-button');
@@ -25,6 +26,7 @@ export class SeoFormView {
         });
 
         let requestMessage = requests.join(', ');
+
         const additionalInfo = this.consoleTextarea.val();
 
         if (typeof additionalInfo === 'string' && additionalInfo.trim() !== '') {
@@ -34,7 +36,14 @@ export class SeoFormView {
         return requestMessage;
     }
 
-    public renderResults(seoData: SeoData): void {
+    public getConversationHistory(): string[] {
+        return this.conversationHistory;
+    }
+
+    public renderResults(data: agentData): void {
+        const seoData: SeoData = data.seoData;
+        const prompt: string = data.prompt;
+
         this.removeLoadingIndicator();
 
         if (!this.answerContainer.is(':empty')) {
@@ -57,6 +66,7 @@ export class SeoFormView {
         }
 
         let html = '<div>';
+        html += '<p style="color: #999;"><em>User request: ' + prompt + '</em></p>';
         if (suggestionsHtml) {
             html += '<h4>SEO Suggestions</h4>';
             html += suggestionsHtml;
@@ -68,6 +78,7 @@ export class SeoFormView {
         html += `<p>${seoData.summary || 'No summary provided.'}</p>`;
         html += '</div>';
 
+        this.conversationHistory.push('[User request: ' + prompt + '| Your structured response:' + JSON.stringify(seoData) + ']');
         this.answerContainer.append(html);
         this.scrollToBottom();
     }
@@ -146,6 +157,10 @@ export class SeoFormView {
                 });
             }
         });
+    }
+
+    public clearConsole(): void {
+        this.consoleTextarea.val('');
     }
 
     private removeLoadingIndicator(): void {

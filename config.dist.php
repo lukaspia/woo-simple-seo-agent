@@ -12,6 +12,6 @@ if (!defined('ABSPATH')) {
 return [
     'gemini' => [
         'api_key' => 'YOUR_GEMINI_API_KEY_HERE',
-        'model'   => 'gemini-2.0-flash',
+        'model'   => 'gemini-2.5-flash',
     ],
 ];

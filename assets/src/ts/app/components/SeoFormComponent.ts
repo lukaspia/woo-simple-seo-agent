@@ -24,11 +24,18 @@ export class SeoFormComponent {
             return;
         }
 
+        const conversationHistory = this.view.getConversationHistory();
+
+        this.view.clearConsole();
         this.view.toggleLoading(true);
 
         try {
-            const seoData = await agentService.generateSeo(requestMessage);
-            this.view.renderResults(seoData);
+            const response = await agentService.generateSeo(requestMessage, conversationHistory);
+            if(!response.success) {
+                throw new Error(response.message);
+            }
+
+            this.view.renderResults(response.data);
         } catch (error: any) {
             this.view.renderError(error.message || 'An unknown error occurred.');
         } finally {
