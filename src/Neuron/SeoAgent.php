@@ -64,7 +64,8 @@ class SeoAgent extends Agent
         ];
 
         $output = [
-            "Return everything as json with fields: title, description, keywords, shortDescription and summary. That part of output write in pl_PL."
+            "Return everything as json with fields: title, description, keywords, shortDescription and summary. That part of output write in " . get_locale() . '.',
+            'If you dont change anything in some specific filed, leave it empty (as their value use ""). Remember that filed not mentioned in "Additional request" should be empty (as their value use "").',
         ];
 
         return (string)new SystemPrompt(

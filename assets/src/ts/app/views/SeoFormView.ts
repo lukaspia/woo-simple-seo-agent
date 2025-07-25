@@ -26,6 +26,7 @@ export class SeoFormView {
         });
 
         let requestMessage = requests.join(', ');
+
         const additionalInfo = this.consoleTextarea.val();
 
         if (typeof additionalInfo === 'string' && additionalInfo.trim() !== '') {
