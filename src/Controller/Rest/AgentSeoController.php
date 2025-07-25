@@ -75,14 +75,22 @@ class AgentSeoController extends AbstractRestController
         $requestMessage = $request->get_param('request_message');
         $requestMessage = $requestMessage ? sanitize_text_field($requestMessage) : '';
 
-        $prompt = "Need SEO optimization for product id {$productId}";
+        $prompt = "Need SEO optimization for product id $productId";
         if (!empty($requestMessage)) {
-            $prompt .= ". Additional request: {$requestMessage}";
+            $prompt .= ". Additional request: $requestMessage";
+        }
+
+        $prompt = apply_filters('wssa_agent_prompt', $prompt, $productId);
+
+        $conversationHistory = $request->get_param('conversation_history');
+        $extendedPrompt = $prompt;
+        if(!empty($conversationHistory)) {
+            $extendedPrompt .= ". Here is our conversation history: " . implode(",", $conversationHistory);
         }
 
         try {
             $seo = $this->seoAgent->chat(
-                new UserMessage(apply_filters('wssa_agent_prompt', $prompt, $productId))
+                new UserMessage($extendedPrompt)
             );
 
             $seoJson = $this->jsonExtractor->getJson($seo->getContent());

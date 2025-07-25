@@ -24,11 +24,13 @@ export class SeoFormComponent {
             return;
         }
 
+        const conversationHistory = this.view.getConversationHistory();
+
         this.view.clearConsole();
         this.view.toggleLoading(true);
 
         try {
-            const response = await agentService.generateSeo(requestMessage);
+            const response = await agentService.generateSeo(requestMessage, conversationHistory);
             if(!response.success) {
                 throw new Error(response.message);
             }

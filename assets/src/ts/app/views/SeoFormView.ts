@@ -7,6 +7,7 @@ export class SeoFormView {
     private consoleTextarea: JQuery;
     private checkboxes: JQuery;
     private acceptCallback: ((type: string, value: string) => void) | null = null;
+    private conversationHistory: string[] = [];
 
     constructor() {
         this.sendButton = $('#wssa-send-button');
@@ -32,6 +33,10 @@ export class SeoFormView {
         }
 
         return requestMessage;
+    }
+
+    public getConversationHistory(): string[] {
+        return this.conversationHistory;
     }
 
     public renderResults(data: agentData): void {
@@ -72,6 +77,7 @@ export class SeoFormView {
         html += `<p>${seoData.summary || 'No summary provided.'}</p>`;
         html += '</div>';
 
+        this.conversationHistory.push('[User request: ' + prompt + '| Your structured response:' + JSON.stringify(seoData) + ']');
         this.answerContainer.append(html);
         this.scrollToBottom();
     }
