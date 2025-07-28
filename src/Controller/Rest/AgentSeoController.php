@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace WooSimpleSeoAgent\Controller\Rest;
 
-use NeuronAI\Chat\Messages\UserMessage;
-use NeuronAI\StructuredOutput\JsonExtractor;
-use WooSimpleSeoAgent\Neuron\SeoAgent;
+
+use WooSimpleSeoAgent\Service\SeoAgentInterface;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -21,7 +20,9 @@ class AgentSeoController extends AbstractRestController
 {
     public const GENERATE_SEO_URL = '/agent/generate';
 
-    public function __construct(private SeoAgent $seoAgent, private JsonExtractor $jsonExtractor)
+    public function __construct(
+        private readonly SeoAgentInterface $seoAgent
+    )
     {
     }
 
@@ -83,18 +84,11 @@ class AgentSeoController extends AbstractRestController
         $prompt = apply_filters('wssa_agent_prompt', $prompt, $productId);
 
         $conversationHistory = $request->get_param('conversation_history');
-        $extendedPrompt = $prompt;
-        if (!empty($conversationHistory)) {
-            $extendedPrompt .= ". Here is our conversation history: " . implode(",", $conversationHistory);
-        }
 
         try {
-            $seo = $this->seoAgent->chat(
-                new UserMessage($extendedPrompt)
-            );
-
-            $seoJson = $this->jsonExtractor->getJson($seo->getContent());
-            $structuredResult = json_decode($seoJson, true, 512, JSON_THROW_ON_ERROR);
+            $structuredResult = $this->seoAgent->generateSeoContent($prompt, [
+                'conversationHistory' => $conversationHistory ?? []
+            ]);
 
             if (empty($structuredResult)) {
                 return $this->errorResponse(
@@ -103,7 +97,10 @@ class AgentSeoController extends AbstractRestController
                 );
             }
 
-            return $this->successResponse(['seoData' => $structuredResult, 'prompt' => $prompt]);
+            return $this->successResponse([
+                'seoData' => $structuredResult, 
+                'prompt' => $prompt
+            ]);
         } catch (\Exception $e) {
             return $this->errorResponse(
                 $e->getMessage(),
