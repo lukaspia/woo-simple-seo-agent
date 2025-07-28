@@ -74,8 +74,8 @@ final class WooSimpleSeoAgent
     /**
      * Get the singleton instance of the class.
      *
-     * @since 1.0.0
      * @return WooSimpleSeoAgent
+     * @since 1.0.0
      */
     public static function instance(): self
     {

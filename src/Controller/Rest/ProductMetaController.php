@@ -112,9 +112,9 @@ class ProductMetaController extends AbstractRestController
         }
 
         $result = wp_update_post([
-            'ID' => $productId,
-            'post_title' => $title,
-        ], true);
+                                     'ID' => $productId,
+                                     'post_title' => $title,
+                                 ], true);
 
         if (is_wp_error($result)) {
             return $this->errorResponse($result->get_error_message());
@@ -139,9 +139,9 @@ class ProductMetaController extends AbstractRestController
         }
 
         $result = wp_update_post([
-            'ID' => $productId,
-            'post_content' => $description,
-        ], true);
+                                     'ID' => $productId,
+                                     'post_content' => $description,
+                                 ], true);
 
         if (is_wp_error($result)) {
             return $this->errorResponse($result->get_error_message());
@@ -166,9 +166,9 @@ class ProductMetaController extends AbstractRestController
         }
 
         $result = wp_update_post([
-            'ID' => $productId,
-            'post_excerpt' => $shortDescription,
-        ], true);
+                                     'ID' => $productId,
+                                     'post_excerpt' => $shortDescription,
+                                 ], true);
 
         if (is_wp_error($result)) {
             return $this->errorResponse($result->get_error_message());

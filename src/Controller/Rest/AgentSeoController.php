@@ -84,7 +84,7 @@ class AgentSeoController extends AbstractRestController
 
         $conversationHistory = $request->get_param('conversation_history');
         $extendedPrompt = $prompt;
-        if(!empty($conversationHistory)) {
+        if (!empty($conversationHistory)) {
             $extendedPrompt .= ". Here is our conversation history: " . implode(",", $conversationHistory);
         }
 
