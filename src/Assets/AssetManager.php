@@ -27,8 +27,9 @@ readonly class AssetManager
             return;
         }
 
-        $scriptPath = $this->pluginDirPath . 'assets/dist/bundle.js';
-        $scriptUrl = $this->pluginDirUrl . 'assets/dist/bundle.js';
+        // Enqueue JavaScript
+        $scriptPath = $this->pluginDirPath . 'assets/dist/js/main.js';
+        $scriptUrl = $this->pluginDirUrl . 'assets/dist/js/main.js';
         $version = file_exists($scriptPath) ? filemtime($scriptPath) : '1.0.0';
 
         wp_enqueue_script(
@@ -39,7 +40,20 @@ readonly class AssetManager
             true
         );
 
-        $namespace = '/' . ApiManager::NAMESPACE;
+        // Enqueue CSS
+        $stylePath = $this->pluginDirPath . 'assets/dist/css/admin.css';
+        $styleUrl = $this->pluginDirUrl . 'assets/dist/css/admin.css';
+        $styleVersion = file_exists($stylePath) ? filemtime($stylePath) : '1.0.0';
+
+        wp_enqueue_style(
+            'woo-simple-seo-agent-admin-style',
+            $styleUrl,
+            [],
+            $styleVersion
+        );
+
+        $namespace = ApiManager::NAMESPACE;
+
         wp_localize_script(
             'woo-simple-seo-agent-script',
             'wssa_params',
