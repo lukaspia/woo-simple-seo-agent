@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
-    bootstrap="tests/bootstrap.php"
-    colors="true"
-    beStrictAboutOutputDuringTests="true"
-    beStrictAboutTodoAnnotatedTests="true"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
-    stopOnFailure="false"
-    verbose="true"
-    forceCoversAnnotation="false"
-    processIsolation="false"
-    stopOnError="false"
-    stopOnIncomplete="false"
-    stopOnSkipped="false"
-    stopOnDefect="false"
+        bootstrap="tests/bootstrap.php"
+        colors="true"
+        beStrictAboutOutputDuringTests="true"
+        stopOnFailure="false"
+        processIsolation="false"
+        stopOnError="false"
+        stopOnIncomplete="false"
+        stopOnSkipped="false"
+        stopOnDefect="false"
+
+        displayDetailsOnTestsThatTriggerDeprecations="true"
+        displayDetailsOnPhpunitDeprecations="true"
 >
     <testsuites>
         <testsuite name="Unit">
             <directory suffix="Test.php">./tests/Unit</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist>
+
+    <source>
+        <include>
             <directory suffix=".php">./src</directory>
-        </whitelist>
-    </filter>
+        </include>
+    </source>
+
     <php>
         <env name="APP_ENV" value="testing"/>
     </php>
