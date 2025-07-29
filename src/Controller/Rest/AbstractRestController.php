@@ -19,8 +19,7 @@ abstract class AbstractRestController implements RestControllerInterface
      */
     public function checkPermissions(): string|bool
     {
-        //return current_user_can('edit_posts');
-        return '__return_true';
+        return current_user_can('edit_posts');
     }
 
     public function validateProductId($value, $request, $paramName): bool

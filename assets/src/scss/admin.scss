@@ -1,0 +1,57 @@
+/**
+ * Admin styles for Woo Simple SEO Agent
+ */
+
+.wssa-admin-container {
+  display: flex;
+  gap: 20px;
+  margin: 20px 0;
+
+  .wssa-admin-form,
+  .wssa-admin-answer {
+    flex: 1;
+  }
+}
+
+.wssa-admin-form {
+  .wssa-console-textarea {
+    width: 100%;
+    margin-top: 5px;
+    min-height: 80px;
+  }
+
+  .wssa-send-button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    .wssa-send-icon {
+      margin-left: 5px;
+    }
+  }
+}
+
+.wssa-admin-answer {
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid #ccd0d4;
+  padding: 12px;
+  background: #fdfdfd;
+  border-radius: 4px;
+  margin-top: 0;
+
+  p {
+    margin: 0 0 10px 0;
+    line-height: 1.5;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .wssa-loading-indicator {
+    color: #666;
+    font-style: italic;
+    margin: 0;
+  }
+}
