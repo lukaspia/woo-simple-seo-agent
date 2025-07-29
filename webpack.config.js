@@ -1,7 +1,11 @@
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-  entry: './assets/src/ts/main.ts',
+  entry: {
+    main: './assets/src/ts/main.ts',
+    admin: './assets/src/scss/admin.scss',
+  },
   module: {
     rules: [
       {
@@ -9,15 +13,39 @@ module.exports = {
         use: 'ts-loader',
         exclude: /node_modules/,
       },
+      {
+        test: /\.scss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              // Enable source maps
+              implementation: require('sass'),
+              sourceMap: true,
+              sassOptions: {
+                // Enable modern Sass features
+                outputStyle: 'expanded',
+              },
+            },
+          },
+        ],
+      },
     ],
   },
   resolve: {
     extensions: ['.ts', '.js'],
   },
   output: {
-    filename: 'bundle.js',
+    filename: 'js/[name].js',
     path: path.resolve(__dirname, 'assets/dist'),
   },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].css',
+    }),
+  ],
   externals: {
     jquery: 'jQuery',
   },

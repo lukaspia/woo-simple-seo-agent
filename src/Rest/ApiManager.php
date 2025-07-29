@@ -7,7 +7,8 @@ namespace WooSimpleSeoAgent\Rest;
 use NeuronAI\StructuredOutput\JsonExtractor;
 use WooSimpleSeoAgent\Controller\Rest\AgentSeoController;
 use WooSimpleSeoAgent\Controller\Rest\ProductMetaController;
-use WooSimpleSeoAgent\Neuron\SeoAgent;
+use WooSimpleSeoAgent\Neuron\SeoAgent as NeuronSeoAgent;
+use WooSimpleSeoAgent\Service\NeuronSeoAgentAdapter;
 
 /**
  * Class ApiManager
@@ -45,8 +46,7 @@ class ApiManager
     {
         return [
             new AgentSeoController(
-                new SeoAgent(),
-                new JsonExtractor()
+                new NeuronSeoAgentAdapter(new NeuronSeoAgent(), new JsonExtractor())
             ),
             new ProductMetaController()
         ];
