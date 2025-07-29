@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./assets/dist",
+    "rootDir": "./assets/src"
+  },
+  "include": [
+    "assets/src/ts/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

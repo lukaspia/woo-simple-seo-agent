@@ -1,0 +1,28 @@
+{
+    "name": "lukasz/woo-simple-seo-agent",
+    "description": "Simple SEO agent for WooCommerce.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Lukasz"
+        }
+    ],
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require": {
+        "symfony/var-dumper": "^6.4 || ^7.0",
+        "inspector-apm/neuron-ai": "^1.0",
+        "symfony/serializer": "^6.4 || ^7.0",
+        "symfony/property-access": "^6.4 || ^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "WooSimpleSeoAgent\\": "src/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0",
+        "mockery/mockery": "*"
+    }
+}
