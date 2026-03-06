@@ -40,50 +40,39 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
  */
 final class WooSimpleSeoAgent
 {
-    /**
-     * The single instance of the class.
-     *
-     * @var WooSimpleSeoAgent|null
-     */
-    private static ?WooSimpleSeoAgent $instance = null;
+    private static ?self $instance = null;
 
     /**
-     * Plugin constructor.
-     *
-     * Private to prevent direct instantiation.
-     *
-     * @since 1.0.0
+     * @param array<string, object> $services
      */
-    private function __construct()
-    {
-        $this->initializeComponents();
-    }
+    private function __construct(
+        private readonly array $services
+    ) {}
 
-    /**
-     * Initialize plugin components.
-     *
-     * @since 1.0.0
-     */
-    private function initializeComponents(): void
-    {
-        new ProductSeoMetaboxController();
-        new ApiManager();
-        new AssetManager(plugin_dir_path(__FILE__), plugin_dir_url(__FILE__));
-    }
-
-    /**
-     * Get the singleton instance of the class.
-     *
-     * @return WooSimpleSeoAgent
-     * @since 1.0.0
-     */
     public static function instance(): self
     {
         if (self::$instance === null) {
-            self::$instance = new self();
+            $assets = new AssetManager(
+                plugin_dir_path(__FILE__),
+                plugin_dir_url(__FILE__)
+            );
+
+            $metabox = new ProductSeoMetaboxController();
+            $api     = new ApiManager();
+
+            self::$instance = new self([
+                                           'assets'  => $assets,
+                                           'metabox' => $metabox,
+                                           'api'     => $api,
+                                       ]);
         }
 
         return self::$instance;
+    }
+
+    public function getService(string $key): ?object
+    {
+        return $this->services[$key] ?? null;
     }
 }
 
@@ -92,9 +81,6 @@ final class WooSimpleSeoAgent
  *
  * @since 1.0.0
  */
-function runWooSimpleSeoAgent(): void
-{
+add_action('plugins_loaded', function () {
     WooSimpleSeoAgent::instance();
-}
-
-add_action('plugins_loaded', __NAMESPACE__ . '\\runWooSimpleSeoAgent');
+});
