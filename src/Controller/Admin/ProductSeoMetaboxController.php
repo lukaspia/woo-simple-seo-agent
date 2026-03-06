@@ -4,31 +4,49 @@ declare(strict_types=1);
 
 namespace WooSimpleSeoAgent\Controller\Admin;
 
-class ProductSeoMetaboxController
+use WooSimpleSeoAgent\View\ViewRendererInterface;
+
+final class ProductSeoMetaboxController
 {
-    public function __construct()
-    {
-        add_action('add_meta_boxes', [$this, 'addSeoMetabox']);
+    private const METABOX_ID = 'woo_simple_seo_agent_metabox';
+
+    /**
+     * @param string $templatePath
+     * @param \WooSimpleSeoAgent\View\ViewRendererInterface $renderer
+     */
+    public function __construct(
+        private readonly string $templatePath,
+        private readonly ViewRendererInterface $renderer
+    ) {
     }
 
-    public function addSeoMetabox(): void
+    /**
+     * @return void
+     */
+    public function register(): void
     {
         add_meta_box(
-            'woo_simple_seo_agent_metabox',
+            self::METABOX_ID,
             __('Woo Simple SEO Agent', 'woo-simple-seo-agent'),
-            [$this, 'renderSeoMetabox'],
+            [$this, 'render'],
             'product',
             'normal',
             'high'
         );
     }
 
-    public function renderSeoMetabox(\WP_Post $post): void
+    /**
+     * @param \WP_Post $post
+     * @return void
+     */
+    public function render(\WP_Post $post): void
     {
-        $templatePath = plugin_dir_path(__DIR__) . '../../templates/product-seo-metabox-form.php';
-
-        if (file_exists($templatePath)) {
-            include $templatePath;
-        }
+        $this->renderer->render(
+            $this->templatePath . 'product-seo-metabox-form.php',
+            [
+                'productId' => $post->ID,
+                'nonce'     => wp_create_nonce('wp_rest'),
+            ]
+        );
     }
 }

@@ -21,9 +21,7 @@ declare(strict_types=1);
 
 namespace WooSimpleSeoAgent;
 
-use WooSimpleSeoAgent\Assets\AssetManager;
 use WooSimpleSeoAgent\Controller\Admin\ProductSeoMetaboxController;
-use WooSimpleSeoAgent\Rest\ApiManager;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -46,33 +44,34 @@ final class WooSimpleSeoAgent
      * @param array<string, object> $services
      */
     private function __construct(
-        private readonly array $services
-    ) {}
+        private readonly ServiceContainer $container
+    ) {
+    }
 
+    /**
+     * @return self
+     */
     public static function instance(): self
     {
         if (self::$instance === null) {
-            $assets = new AssetManager(
-                plugin_dir_path(__FILE__),
-                plugin_dir_url(__FILE__)
-            );
+            $services = ContainerBuilder::build(__FILE__);
 
-            $metabox = new ProductSeoMetaboxController();
-            $api     = new ApiManager();
-
-            self::$instance = new self([
-                                           'assets'  => $assets,
-                                           'metabox' => $metabox,
-                                           'api'     => $api,
-                                       ]);
+            self::$instance = new self($services);
+            self::$instance->registerHooks();
         }
 
         return self::$instance;
     }
 
-    public function getService(string $key): ?object
+    /**
+     * @return void
+     */
+    private function registerHooks(): void
     {
-        return $this->services[$key] ?? null;
+        $metabox = $this->container->getController('metabox');
+        if ($metabox instanceof ProductSeoMetaboxController) {
+            add_action('add_meta_boxes', [$metabox, 'register']);
+        }
     }
 }
 
