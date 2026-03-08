@@ -58,7 +58,7 @@ readonly class AssetManager
             'woo-simple-seo-agent-script',
             'wssa_params',
             [
-                'rest_url' => esc_url_raw(rest_url($namespace . AgentSeoController::GENERATE_SEO_URL)),
+                'rest_url' => esc_url_raw(rest_url($namespace . AgentSeoController::ROUTE_GENERATE)),
                 'rest_product_meta_url' => [
                     'update_title' => esc_url_raw(rest_url($namespace . ProductMetaController::UPDATE_TITLE_URL)),
                     'update_description' => esc_url_raw(
