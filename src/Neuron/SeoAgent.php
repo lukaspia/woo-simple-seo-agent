@@ -11,39 +11,27 @@ use NeuronAI\SystemPrompt;
 use NeuronAI\Tools\PropertyType;
 use NeuronAI\Tools\Tool;
 use NeuronAI\Tools\ToolProperty;
-use WooSimpleSeoAgent\Dto\Seo;
+use WooSimpleSeoAgent\Dto\SeoDto;
+use WooSimpleSeoAgent\Repository\ProductRepositoryInterface;
 
-/**
- * Class SeoAgent
- *
- * @package WooSimpleSeoAgent\Neuron
- */
-class SeoAgent extends Agent
+final class SeoAgent extends Agent
 {
+    public function __construct(
+        private readonly string $apiKey,
+        private readonly string $model,
+        private readonly string $locale,
+        private readonly ProductRepositoryInterface $productRepository
+    ) {
+    }
+
     /**
      * @return \NeuronAI\Providers\AIProviderInterface
      */
     public function provider(): AIProviderInterface
     {
-        $configPath = dirname(__DIR__, 2) . '/config.php';
-        $config = [];
-
-        if (file_exists($configPath)) {
-            $config = require $configPath;
-        }
-
-        $apiKey = $config['gemini']['api_key'] ?? '';
-        $model = $config['gemini']['model'] ?? 'gemini-2.5-flash';
-
-        if (empty($apiKey) || $apiKey === 'YOUR_GEMINI_API_KEY_HERE') {
-            throw new \RuntimeException(
-                'Missing Gemini API key. Please set it in the config file. See: ' . $configPath
-            );
-        }
-
         return new Gemini(
-            key:   $apiKey,
-            model: $model
+            key:   $this->apiKey,
+            model: $this->model
         );
     }
 
@@ -54,17 +42,16 @@ class SeoAgent extends Agent
     {
         $steps = [
             'Improve seo elements if needed. If not, leave them empty (as their value use "").',
-            'Change only elements that are indicate as "Additional request". If element is not mentioned in "Additional request" return them empty (as their value use "").',
-            "Take into account requirements of GEO (Generative Engine Optimization) in you tasks.",
+            'Change only elements that are indicated as "Additional request". If element is not mentioned in "Additional request" return them empty (as their value use "").',
+            "Take into account requirements of GEO (Generative Engine Optimization) in your tasks.",
             "In case you do something with keywords/tags, return maximum of 4 keywords.",
-            "In case you do something with description, you can use html tags if needed (for example to highlight important words or list things).",
-            "Write the summary of the evaluation, where you made the possible improvements or add other messages for user. Except simple text, you can use html tags to list things. You can propose further tasks and improvements if needed.",
+            "In case you do something with description, you can use html tags if needed.",
+            "Write the summary of the evaluation, where you made the possible improvements. You can use html tags.",
         ];
 
         $output = [
-            "Return everything as json with fields: title, description, keywords, shortDescription and summary. That part of output write in " . get_locale(
-            ) . '.',
-            'If you dont change anything in some specific filed, leave it empty (as their value use ""). Remember that filed not mentioned in "Additional request" should be empty (as their value use "").',
+            "Return everything as json with fields: title, description, keywords, shortDescription and summary. That part of output write in " . $this->locale . '.',
+            'If you dont change anything in some specific field, leave it empty (as their value use "").',
         ];
 
         return (string)new SystemPrompt(
@@ -91,14 +78,7 @@ class SeoAgent extends Agent
                     required:    true
                 )
             )->setCallable(function (int $productId) {
-                $product = wc_get_product($productId);
-
-                return [
-                    'title' => $product->get_title(),
-                    'description' => $product->get_description(),
-                    'shortDescription' => $product->get_short_description(),
-                    'keywords' => $this->getKeywords($productId),
-                ];
+                return $this->productRepository->getProductDataForSeo($productId);
             })
         ];
     }
@@ -108,22 +88,6 @@ class SeoAgent extends Agent
      */
     protected function getOutputClass(): string
     {
-        return Seo::class;
-    }
-
-    private function getKeywords(int $productId): string
-    {
-        $productTags = get_the_terms($productId, 'product_tag');
-
-        if (!empty($productTags) && !is_wp_error($productTags)) {
-            $tagNames = [];
-            foreach ($productTags as $tag) {
-                $tagNames[] = $tag->name;
-            }
-
-            return implode(', ', $tagNames);
-        }
-
-        return '';
+        return SeoDto::class;
     }
 }

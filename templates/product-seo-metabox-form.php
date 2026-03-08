@@ -60,6 +60,5 @@ if (!defined('ABSPATH')) {
         </p>
     </div>
     <div id="wssa-agent-answer" class="agent-answer wssa-admin-answer">
-        <!-- Content will be dynamically inserted here by JavaScript -->
     </div>
 </div>
