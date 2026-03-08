@@ -14,7 +14,6 @@ class SeoAgentTest extends TestCase
 
     protected function setUp(): void
     {
-        // Mockujemy interfejs - czyste PHPUnit to potrafi idealnie
         $this->repositoryMock = $this->createMock(ProductRepositoryInterface::class);
 
         $this->agent = new SeoAgent(
@@ -29,7 +28,6 @@ class SeoAgentTest extends TestCase
     {
         $instructions = $this->agent->instructions();
 
-        // Sprawdzamy, czy prompt zawiera kluczowe elementy logiczne
         $this->assertStringContainsString('pl_PL', $instructions);
         $this->assertStringContainsString('GEO', $instructions);
         $this->assertStringContainsString('json', $instructions);
@@ -37,7 +35,6 @@ class SeoAgentTest extends TestCase
 
     public function test_tools_setup_is_correct(): void
     {
-        // Używamy refleksji, żeby dostać się do protected tools()
         $reflection = new ReflectionClass(SeoAgent::class);
         $method = $reflection->getMethod('tools');
         $method->setAccessible(true);
@@ -65,10 +62,8 @@ class SeoAgentTest extends TestCase
         $tools = $toolsMethod->invoke($this->agent);
         $productTool = $tools[0];
 
-        // Sprawdzamy nazwę tool-a (to już mamy zaliczone)
         $this->assertEquals('get_product_data', $productTool->getName());
 
-        // Szukamy właściwości, która przechowuje naszą funkcję
         $toolReflection = new \ReflectionClass($productTool);
         $callback = null;
 

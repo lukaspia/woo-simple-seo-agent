@@ -20,6 +20,10 @@ final class AgentSeoController extends AbstractRestController implements RestCon
     ) {
     }
 
+    /**
+     * @param string $namespace
+     * @return void
+     */
     public function registerRoutes(string $namespace): void
     {
         register_rest_route($namespace, self::ROUTE_GENERATE, [
@@ -30,6 +34,10 @@ final class AgentSeoController extends AbstractRestController implements RestCon
         ]);
     }
 
+    /**
+     * @param \WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
     public function handleGenerateRequest(WP_REST_Request $request): WP_REST_Response
     {
         $productId = (int)$request->get_param('product_id');
@@ -57,6 +65,9 @@ final class AgentSeoController extends AbstractRestController implements RestCon
         }
     }
 
+    /**
+     * @return array
+     */
     private function getRouteArgs(): array
     {
         return [

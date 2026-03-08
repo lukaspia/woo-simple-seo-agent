@@ -16,8 +16,13 @@ final readonly class AssetEnqueuer
     public function __construct(
         private string $pluginDirPath,
         private string $pluginDirUrl
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param string $hookSuffix
+     * @return void
+     */
     public function registerAdminScripts(string $hookSuffix): void
     {
         if (!in_array($hookSuffix, ['post.php', 'post-new.php'], true)) {
@@ -34,6 +39,9 @@ final readonly class AssetEnqueuer
         $this->localizeScripts();
     }
 
+    /**
+     * @return void
+     */
     private function enqueueScripts(): void
     {
         $path = 'assets/dist/js/main.js';
@@ -46,6 +54,9 @@ final readonly class AssetEnqueuer
         );
     }
 
+    /**
+     * @return void
+     */
     private function enqueueStyles(): void
     {
         $path = 'assets/dist/css/admin.css';
@@ -57,6 +68,9 @@ final readonly class AssetEnqueuer
         );
     }
 
+    /**
+     * @return void
+     */
     private function localizeScripts(): void
     {
         $namespace = RestRouteRegistrar::NAMESPACE;
@@ -67,17 +81,25 @@ final readonly class AssetEnqueuer
             [
                 'rest_url' => esc_url_raw(rest_url($namespace . AgentSeoController::ROUTE_GENERATE)),
                 'rest_product_meta_url' => [
-                    'update_title'             => esc_url_raw(rest_url($namespace . ProductMetaController::UPDATE_TITLE_URL)),
-                    'update_description'       => esc_url_raw(rest_url($namespace . ProductMetaController::UPDATE_DESCRIPTION_URL)),
-                    'update_short_description' => esc_url_raw(rest_url($namespace . ProductMetaController::UPDATE_SHORT_DESCRIPTION_URL)),
-                    'update_keywords'          => esc_url_raw(rest_url($namespace . ProductMetaController::UPDATE_KEYWORDS_URL)),
+                    'update_title' => esc_url_raw(rest_url($namespace . ProductMetaController::UPDATE_TITLE_URL)),
+                    'update_description' => esc_url_raw(
+                        rest_url($namespace . ProductMetaController::UPDATE_DESCRIPTION_URL)
+                    ),
+                    'update_short_description' => esc_url_raw(
+                        rest_url($namespace . ProductMetaController::UPDATE_SHORT_DESCRIPTION_URL)
+                    ),
+                    'update_keywords' => esc_url_raw(rest_url($namespace . ProductMetaController::UPDATE_KEYWORDS_URL)),
                 ],
-                'nonce'      => wp_create_nonce('wp_rest'),
+                'nonce' => wp_create_nonce('wp_rest'),
                 'product_id' => get_the_ID(),
             ]
         );
     }
 
+    /**
+     * @param string $relativePath
+     * @return string
+     */
     private function getAssetVersion(string $relativePath): string
     {
         $fullPath = $this->pluginDirPath . $relativePath;

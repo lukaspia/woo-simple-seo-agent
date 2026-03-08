@@ -27,9 +27,6 @@ class ProductMetaControllerTest extends TestCase
         $mock_post = null;
     }
 
-    /**
-     * Pomocnicza metoda do wywoływania prywatnych metod kontrolera.
-     */
     private function invokeHandleUpdate(WP_REST_Request $request, string $field)
     {
         $reflection = new \ReflectionClass(get_class($this->controller));
@@ -106,7 +103,6 @@ class ProductMetaControllerTest extends TestCase
         global $mock_post;
         $mock_post = new \stdClass();
 
-        // Symulujemy, że repozytorium zawiodło
         $this->repositoryMock->method('updateContent')->willReturn(false);
 
         $request = new \WP_REST_Request('POST', $this->namespace . '/product/update-description');
@@ -118,7 +114,6 @@ class ProductMetaControllerTest extends TestCase
 
         $this->assertFalse($responseData['success']);
 
-        // Sprawdzamy różne możliwe lokalizacje wiadomości błędu
         $message = $responseData['data']['message'] ?? $responseData['message'] ?? $responseData['error'] ?? null;
 
         $this->assertEquals('Failed to update product field', $message);

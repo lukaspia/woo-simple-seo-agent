@@ -10,11 +10,11 @@ class SeoDtoTest extends TestCase
     public function test_from_array_maps_all_fields_correctly(): void
     {
         $data = [
-            'title'            => 'Super Buty',
-            'description'      => 'Najlepsze buty we Wrocławiu.',
-            'keywords'         => 'buty, sport, wygoda',
+            'title' => 'Super Buty',
+            'description' => 'Najlepsze buty we Wrocławiu.',
+            'keywords' => 'buty, sport, wygoda',
             'shortDescription' => 'Krótki opis butów',
-            'summary'          => 'Poprawiono czytelność i dodano słowa kluczowe.'
+            'summary' => 'Poprawiono czytelność i dodano słowa kluczowe.'
         ];
 
         $dto = SeoDto::fromArray($data);
@@ -29,21 +29,21 @@ class SeoDtoTest extends TestCase
     public function test_from_array_handles_missing_keys_with_defaults(): void
     {
         $data = [
-            'title'       => 'Tylko Tytuł',
+            'title' => 'Tylko Tytuł',
             'description' => 'Tylko Opis'
         ];
 
         $dto = SeoDto::fromArray($data);
 
         $this->assertEquals('Tylko Tytuł', $dto->title);
-        $this->assertEquals('', $dto->keywords); // Domyślna wartość
-        $this->assertEquals('', $dto->summary);  // Domyślna wartość
+        $this->assertEquals('', $dto->keywords);
+        $this->assertEquals('', $dto->summary);
     }
 
     public function test_to_array_returns_all_properties(): void
     {
         $dto = new SeoDto(
-            title: 'Test',
+            title:       'Test',
             description: 'Opis'
         );
 

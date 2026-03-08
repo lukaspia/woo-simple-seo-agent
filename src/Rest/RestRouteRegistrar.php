@@ -15,7 +15,8 @@ final class RestRouteRegistrar
 
     public function __construct(
         private readonly array $controllers
-    ) {}
+    ) {
+    }
 
 
     /**

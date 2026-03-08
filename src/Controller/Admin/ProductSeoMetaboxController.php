@@ -45,7 +45,7 @@ final class ProductSeoMetaboxController
             $this->templatePath . 'product-seo-metabox-form.php',
             [
                 'productId' => $post->ID,
-                'nonce'     => wp_create_nonce('wp_rest'),
+                'nonce' => wp_create_nonce('wp_rest'),
             ]
         );
     }

@@ -70,13 +70,15 @@ final class ProductRepository implements ProductRepositoryInterface
     public function getProductDataForSeo(int $productId): array
     {
         $product = wc_get_product($productId);
-        if (!$product) return [];
+        if (!$product) {
+            return [];
+        }
 
         return [
-            'title'            => $product->get_title(),
-            'description'      => $product->get_description(),
+            'title' => $product->get_title(),
+            'description' => $product->get_description(),
             'shortDescription' => $product->get_short_description(),
-            'keywords'         => $this->getProductTagNames($productId),
+            'keywords' => $this->getProductTagNames($productId),
         ];
     }
 }
