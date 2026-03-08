@@ -14,7 +14,7 @@ use WooSimpleSeoAgent\Rest\RestRouteRegistrar;
 use WooSimpleSeoAgent\Service\NeuronSeoAgentAdapter;
 use WooSimpleSeoAgent\Service\PromptBuilder;
 use WooSimpleSeoAgent\View\ViewRenderer;
-use WooSimpleSeoAgent\Neuron\SeoAgent as NeuronSeoAgent;
+use WooSimpleSeoAgent\Neuron\SeoAgent;
 
 final class ContainerBuilder
 {
@@ -30,10 +30,17 @@ final class ContainerBuilder
         $renderer = new ViewRenderer();
         $assets = new AssetEnqueuer($basePath, $baseUrl);
         $jsonExtractor = new JsonExtractor();
-        $neuronSeo = new NeuronSeoAgent();
-        $promptBuilder = new PromptBuilder();
 
         $productRepository = new ProductRepository();
+
+        $config = require $basePath . 'config.php';
+        $neuronSeo = new SeoAgent(
+            apiKey:            $config['gemini']['api_key'] ?? '',
+            model:             $config['gemini']['model'] ?? 'gemini-2.0-flash',
+            locale:            get_locale(),
+            productRepository: $productRepository
+        );
+        $promptBuilder = new PromptBuilder();
 
         $seoAdapter = new NeuronSeoAgentAdapter($neuronSeo, $jsonExtractor);
 
