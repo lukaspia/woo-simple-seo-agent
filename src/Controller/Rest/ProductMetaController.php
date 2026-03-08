@@ -4,227 +4,94 @@ declare(strict_types=1);
 
 namespace WooSimpleSeoAgent\Controller\Rest;
 
+use WooSimpleSeoAgent\Repository\ProductRepositoryInterface;
 use WP_REST_Request;
 use WP_REST_Response;
 
-class ProductMetaController extends AbstractRestController
+final class ProductMetaController extends AbstractRestController
 {
     public const UPDATE_TITLE_URL = '/product/update-title';
     public const UPDATE_DESCRIPTION_URL = '/product/update-description';
     public const UPDATE_SHORT_DESCRIPTION_URL = '/product/update-short-description';
     public const UPDATE_KEYWORDS_URL = '/product/update-keywords';
 
+    private const FIELDS_MAP = [
+        self::UPDATE_TITLE_URL => 'title',
+        self::UPDATE_DESCRIPTION_URL => 'description',
+        self::UPDATE_SHORT_DESCRIPTION_URL => 'short_description',
+        self::UPDATE_KEYWORDS_URL => 'keywords',
+    ];
 
-    public function validateProductId($value, $request, $paramName): bool
-    {
-        return is_numeric($value);
+    public function __construct(
+        private readonly ProductRepositoryInterface $productRepository
+    ) {
     }
 
+    /**
+     * @param string $namespace
+     * @return void
+     */
     public function registerRoutes(string $namespace): void
     {
-        register_rest_route(
-            $namespace,
-            self::UPDATE_TITLE_URL,
-            [
+        foreach (self::FIELDS_MAP as $route => $field) {
+            register_rest_route($namespace, $route, [
                 'methods' => 'POST',
-                'callback' => [$this, 'updateTitle'],
+                'callback' => fn(WP_REST_Request $request) => $this->handleUpdate($request, $field),
                 'permission_callback' => [$this, 'checkPermissions'],
-                'args' => [
-                    'product_id' => [
-                        'required' => true,
-                        'validate_callback' => [$this, 'validateProductId'],
-                        'sanitize_callback' => 'absint',
-                    ],
-                    'value' => [
-                        'required' => true,
-                        'sanitize_callback' => 'sanitize_text_field',
-                    ],
-                ],
-            ]
-        );
-
-        register_rest_route(
-            $namespace,
-            self::UPDATE_DESCRIPTION_URL,
-            [
-                'methods' => 'POST',
-                'callback' => [$this, 'updateDescription'],
-                'permission_callback' => [$this, 'checkPermissions'],
-                'args' => [
-                    'product_id' => [
-                        'required' => true,
-                        'validate_callback' => [$this, 'validateProductId'],
-                        'sanitize_callback' => 'absint',
-                    ],
-                    'value' => [
-                        'required' => true,
-                        'sanitize_callback' => 'wp_kses_post',
-                    ],
-                ],
-            ]
-        );
-
-        register_rest_route(
-            $namespace,
-            self::UPDATE_SHORT_DESCRIPTION_URL,
-            [
-                'methods' => 'POST',
-                'callback' => [$this, 'updateShortDescription'],
-                'permission_callback' => [$this, 'checkPermissions'],
-                'args' => [
-                    'product_id' => [
-                        'required' => true,
-                        'validate_callback' => [$this, 'validateProductId'],
-                        'sanitize_callback' => 'absint',
-                    ],
-                    'value' => [
-                        'required' => true,
-                        'sanitize_callback' => 'wp_kses_post',
-                    ],
-                ],
-            ]
-        );
-
-        register_rest_route(
-            $namespace,
-            self::UPDATE_KEYWORDS_URL,
-            [
-                'methods' => 'POST',
-                'callback' => [$this, 'updateKeywords'],
-                'permission_callback' => [$this, 'checkPermissions'],
-                'args' => [
-                    'product_id' => [
-                        'required' => true,
-                        'validate_callback' => [$this, 'validateProductId'],
-                        'sanitize_callback' => 'absint',
-                    ],
-                    'value' => [
-                        'required' => true,
-                        'sanitize_callback' => 'sanitize_text_field',
-                    ],
-                ],
-            ]
-        );
+                'args' => $this->getCommonArgs($field),
+            ]);
+        }
     }
 
-    public function updateTitle(WP_REST_Request $request): WP_REST_Response
+    /**
+     * @param \WP_REST_Request $request
+     * @param string $field
+     * @return \WP_REST_Response
+     */
+    private function handleUpdate(WP_REST_Request $request, string $field): WP_REST_Response
     {
-        $productId = $request->get_param('product_id');
-        $title = $request->get_param('value');
+        $productId = (int)$request->get_param('product_id');
+        $value = $request->get_param('value');
 
         if (!get_post($productId)) {
-            return $this->errorResponse('Product not found', 404);
+            return $this->errorResponse(__('Product not found', 'woo-simple-seo-agent'), 404);
         }
 
-        $result = wp_update_post([
-                                     'ID' => $productId,
-                                     'post_title' => $title,
-                                 ], true);
+        $success = match ($field) {
+            'title' => $this->productRepository->updateTitle($productId, (string)$value),
+            'description' => $this->productRepository->updateContent($productId, (string)$value),
+            'short_description' => $this->productRepository->updateExcerpt($productId, (string)$value),
+            'keywords' => $this->productRepository->updateTags($productId, explode(',', (string)$value)),
+            default => false,
+        };
 
-        if (is_wp_error($result)) {
-            return $this->errorResponse($result->get_error_message());
+        if (!$success) {
+            return $this->errorResponse(__('Failed to update product field', 'woo-simple-seo-agent'));
         }
 
         return $this->successResponse(
-            [
-                'product_id' => $productId,
-                'title' => $title,
-            ],
-            __('Product title updated successfully', 'woo-simple-seo-agent')
+            ['product_id' => $productId, $field => $value],
+            __('Field updated successfully', 'woo-simple-seo-agent')
         );
     }
 
-    public function updateDescription(WP_REST_Request $request): WP_REST_Response
+    /**
+     * @param string $field
+     * @return array[]
+     */
+    private function getCommonArgs(string $field): array
     {
-        $productId = $request->get_param('product_id');
-        $description = $request->get_param('value');
-
-        if (!get_post($productId)) {
-            return $this->errorResponse('Product not found', 404);
-        }
-
-        $result = wp_update_post([
-                                     'ID' => $productId,
-                                     'post_content' => $description,
-                                 ], true);
-
-        if (is_wp_error($result)) {
-            return $this->errorResponse($result->get_error_message());
-        }
-
-        return $this->successResponse(
-            [
-                'product_id' => $productId,
-                'description' => $description
+        return [
+            'product_id' => [
+                'required' => true,
+                'sanitize_callback' => 'absint',
             ],
-            __('Product description updated successfully', 'woo-simple-seo-agent')
-        );
-    }
-
-    public function updateShortDescription(WP_REST_Request $request): WP_REST_Response
-    {
-        $productId = $request->get_param('product_id');
-        $shortDescription = $request->get_param('value');
-
-        if (!get_post($productId)) {
-            return $this->errorResponse('Product not found', 404);
-        }
-
-        $result = wp_update_post([
-                                     'ID' => $productId,
-                                     'post_excerpt' => $shortDescription,
-                                 ], true);
-
-        if (is_wp_error($result)) {
-            return $this->errorResponse($result->get_error_message());
-        }
-
-        return $this->successResponse(
-            [
-                'product_id' => $productId,
-                'short_description' => $shortDescription,
+            'value' => [
+                'required' => true,
+                'sanitize_callback' => in_array($field, ['description', 'short_description'])
+                    ? 'wp_kses_post'
+                    : 'sanitize_text_field',
             ],
-            __('Product short description updated successfully', 'woo-simple-seo-agent')
-        );
-    }
-
-    public function updateKeywords(WP_REST_Request $request): WP_REST_Response
-    {
-        $productId = $request->get_param('product_id');
-        $keywords = $request->get_param('value');
-
-        if (!get_post($productId)) {
-            return $this->errorResponse('Product not found', 404);
-        }
-
-        $result = $this->updateWoocommerceProductTags($productId, explode(',', $keywords));
-
-        if (!$result) {
-            return $this->errorResponse('Failed to update product keywords');
-        }
-
-        return $this->successResponse(
-            [
-                'product_id' => $productId,
-                'keywords' => $keywords,
-            ],
-            __('Product keywords updated successfully', 'woo-simple-seo-agent')
-        );
-    }
-
-    private function updateWoocommerceProductTags(int $productId, array $newTags): bool
-    {
-        $result = wp_set_object_terms(
-            $productId,
-            $newTags,
-            'product_tag',
-            false
-        );
-
-        if (is_wp_error($result)) {
-            return false;
-        }
-
-        return true;
+        ];
     }
 }

@@ -9,6 +9,7 @@ use WooSimpleSeoAgent\Assets\AssetManager;
 use WooSimpleSeoAgent\Controller\Admin\ProductSeoMetaboxController;
 use WooSimpleSeoAgent\Controller\Rest\AgentSeoController;
 use WooSimpleSeoAgent\Controller\Rest\ProductMetaController;
+use WooSimpleSeoAgent\Repository\ProductRepository;
 use WooSimpleSeoAgent\Rest\RestRouteRegistrar;
 use WooSimpleSeoAgent\Service\NeuronSeoAgentAdapter;
 use WooSimpleSeoAgent\Service\PromptBuilder;
@@ -32,11 +33,13 @@ final class ContainerBuilder
         $neuronSeo = new NeuronSeoAgent();
         $promptBuilder = new PromptBuilder();
 
+        $productRepository = new ProductRepository();
+
         $seoAdapter = new NeuronSeoAgentAdapter($neuronSeo, $jsonExtractor);
 
         $restControllers = [
             new AgentSeoController($seoAdapter, $promptBuilder),
-            new ProductMetaController(),
+            new ProductMetaController($productRepository),
         ];
 
         $api = new RestRouteRegistrar($restControllers);
@@ -48,6 +51,7 @@ final class ContainerBuilder
                              'renderer' => $renderer,
                              'assets' => $assets,
                              'seo_adapter' => $seoAdapter,
+                             'product_repository' => $productRepository,
                          ],
             controllers: [
                              'metabox' => $metabox,
