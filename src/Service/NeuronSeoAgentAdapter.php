@@ -6,28 +6,66 @@ namespace WooSimpleSeoAgent\Service;
 
 use NeuronAI\Chat\Messages\UserMessage;
 use NeuronAI\StructuredOutput\JsonExtractor;
-use WooSimpleSeoAgent\Neuron\SeoAgent as NeuronSeoAgent;
+use WooSimpleSeoAgent\Dto\SeoDto;
+use NeuronAI\AgentInterface;
+use WooSimpleSeoAgent\Service\SeoAgentInterface;
 
-readonly class NeuronSeoAgentAdapter implements SeoAgentInterface
+final readonly class NeuronSeoAgentAdapter implements SeoAgentInterface
 {
     public function __construct(
-        private NeuronSeoAgent $seoAgent,
+        private AgentInterface $seoAgent,
         private JsonExtractor $jsonExtractor
     ) {
     }
 
-    public function generateSeoContent(string $prompt, array $context = []): array
+    /**
+     * @param string $prompt
+     * @param array $context
+     * @return \WooSimpleSeoAgent\Dto\SeoDto
+     * @throws \JsonException
+     * @throws \Throwable
+     */
+    public function generateSeoContent(string $prompt, array $context = []): SeoDto
     {
-        if (!empty($context['conversationHistory'])) {
-            $prompt .= ". Here is our conversation history: " .
-                implode(",", $context['conversationHistory']);
-        }
+        $fullPrompt = $this->enrichPromptWithContext($prompt, $context);
 
         $response = $this->seoAgent->chat(
-            new UserMessage($prompt)
+            new UserMessage($fullPrompt)
         );
 
-        $seoJson = $this->jsonExtractor->getJson($response->getContent());
-        return json_decode($seoJson, true, 512, JSON_THROW_ON_ERROR);
+        $rawContent = $response->getContent();
+        $seoJson = $this->jsonExtractor->getJson($rawContent);
+
+        if (empty($seoJson)) {
+            throw new \RuntimeException(
+                "AI failed to return valid JSON tags. Raw response: " . substr($rawContent, 0, 100)
+            );
+        }
+
+        $data = json_decode($seoJson, true, 512, JSON_THROW_ON_ERROR);
+
+        return SeoDto::fromArray($data);
+    }
+
+    /**
+     * @param string $prompt
+     * @param array $context
+     * @return string
+     */
+    private function enrichPromptWithContext(string $prompt, array $context): string
+    {
+        if (empty($context['conversationHistory'])) {
+            return $prompt;
+        }
+
+        $history = is_array($context['conversationHistory'])
+            ? implode("\n- ", $context['conversationHistory'])
+            : $context['conversationHistory'];
+
+        return sprintf(
+            "%s\n\n### Previous Conversation Context:\n- %s",
+            $prompt,
+            $history
+        );
     }
 }

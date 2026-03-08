@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace WooSimpleSeoAgent\Service;
 
+use WooSimpleSeoAgent\Dto\SeoDto;
+
 interface SeoAgentInterface
 {
     /**
@@ -14,5 +16,5 @@ interface SeoAgentInterface
      * @return array Decoded JSON response from the AI
      * @throws \JsonException If the response cannot be decoded
      */
-    public function generateSeoContent(string $prompt, array $context = []): array;
+    public function generateSeoContent(string $prompt, array $context = []): SeoDto;
 }

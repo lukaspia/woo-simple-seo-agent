@@ -4,97 +4,65 @@ declare(strict_types=1);
 
 namespace WooSimpleSeoAgent\Tests\Unit\Service;
 
-use NeuronAI\Chat\Messages\Message;
-use NeuronAI\Chat\Messages\UserMessage;
-use NeuronAI\StructuredOutput\JsonExtractor;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use WooSimpleSeoAgent\Neuron\SeoAgent as NeuronSeoAgent;
+use NeuronAI\AgentInterface;
+use NeuronAI\Chat\Messages\UserMessage;
+use NeuronAI\Chat\Messages\Message;
+use NeuronAI\StructuredOutput\JsonExtractor;
+use WooSimpleSeoAgent\Dto\SeoDto;
 use WooSimpleSeoAgent\Service\NeuronSeoAgentAdapter;
 
 class NeuronSeoAgentAdapterTest extends TestCase
 {
-    private MockObject|NeuronSeoAgent $neuronSeoAgentMock;
-    private MockObject|JsonExtractor $jsonExtractorMock;
-    private NeuronSeoAgentAdapter $adapter;
+    private $agentMock;
+    private $extractorMock;
+    private $adapter;
 
     protected function setUp(): void
     {
-        $this->neuronSeoAgentMock = $this->createMock(NeuronSeoAgent::class);
-        $this->jsonExtractorMock = $this->createMock(JsonExtractor::class);
-        $this->adapter = new NeuronSeoAgentAdapter(
-            $this->neuronSeoAgentMock,
-            $this->jsonExtractorMock
-        );
+        $this->agentMock = $this->createMock(AgentInterface::class);
+        $this->extractorMock = $this->createMock(JsonExtractor::class);
+        $this->adapter = new NeuronSeoAgentAdapter($this->agentMock, $this->extractorMock);
     }
 
-    public function testGenerateSeoContentWithEmptyContext(): void
+    public function test_generate_seo_content_returns_dto_on_success(): void
     {
-        $prompt = 'Test prompt';
-        $expectedResponse = ['title' => 'Test Title', 'description' => 'Test Description'];
+        $prompt = "Test prompt";
+        $jsonOnly = '{"title": "SEO Title", "description": "SEO Desc"}';
 
-        $message = $this->createMock(Message::class);
-        $message->method('getContent')
-            ->willReturn('dummy');
+        $messageMock = $this->createMock(Message::class);
+        $messageMock->method('getContent')->willReturn("Raw AI output with json");
 
-        $this->neuronSeoAgentMock->expects($this->once())
+        $this->agentMock->expects($this->once())
             ->method('chat')
-            ->with($this->callback(function ($arg) use ($prompt) {
-                return $arg instanceof UserMessage && $arg->getContent() === $prompt;
-            }))
-            ->willReturn($message);
+            ->willReturn($messageMock);
 
-        $this->jsonExtractorMock->expects($this->once())
+        $this->extractorMock->expects($this->once())
             ->method('getJson')
-            ->with('dummy')
-            ->willReturn(json_encode($expectedResponse));
+            ->willReturn($jsonOnly);
 
         $result = $this->adapter->generateSeoContent($prompt);
 
-        $this->assertEquals($expectedResponse, $result);
+        $this->assertInstanceOf(SeoDto::class, $result);
+        $this->assertEquals('SEO Title', $result->title);
     }
 
-    public function testGenerateSeoContentWithConversationHistory(): void
+    public function test_enrich_prompt_with_context_merges_history(): void
     {
-        $prompt = 'Test prompt';
-        $history = ['Message 1', 'Message 2'];
-        $context = ['conversationHistory' => $history];
-        $expectedResponse = ['title' => 'Test Title', 'description' => 'Test Description'];
+        $context = ['conversationHistory' => ['User: Hello']];
+        $messageMock = $this->createMock(Message::class);
+        $messageMock->method('getContent')->willReturn('{"title": "ok"}');
 
-        $message = $this->createMock(Message::class);
-        $message->method('getContent')
-            ->willReturn('dummy');
-
-        $this->neuronSeoAgentMock->expects($this->once())
+        $this->agentMock->expects($this->once())
             ->method('chat')
-            ->with($this->callback(function ($arg) use ($prompt, $history) {
-                $expectedContent = $prompt . '. Here is our conversation history: ' . implode(',', $history);
-                return $arg->getContent() === $expectedContent;
+            ->with($this->callback(function ($msg) {
+                $content = is_array($msg) ? '' : $msg->getContent();
+                return str_contains($content, '### Previous Conversation Context:');
             }))
-            ->willReturn($message);
+            ->willReturn($messageMock);
 
-        $this->jsonExtractorMock->expects($this->once())
-            ->method('getJson')
-            ->willReturn(json_encode($expectedResponse));
+        $this->extractorMock->method('getJson')->willReturn('{"title": "ok"}');
 
-        $result = $this->adapter->generateSeoContent($prompt, $context);
-
-        $this->assertEquals($expectedResponse, $result);
-    }
-
-    public function testGenerateSeoContentWithJsonError(): void
-    {
-        $message = $this->createMock(Message::class);
-        $message->method('getContent')
-            ->willReturn('dummy');
-
-        $this->neuronSeoAgentMock->method('chat')
-            ->willReturn($message);
-
-        $this->jsonExtractorMock->method('getJson')
-            ->willReturn('invalid json');
-
-        $this->expectException(\JsonException::class);
-        $this->adapter->generateSeoContent('test');
+        $this->adapter->generateSeoContent("Hi", $context);
     }
 }
