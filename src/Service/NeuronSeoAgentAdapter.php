@@ -7,13 +7,13 @@ namespace WooSimpleSeoAgent\Service;
 use NeuronAI\Chat\Messages\UserMessage;
 use NeuronAI\StructuredOutput\JsonExtractor;
 use WooSimpleSeoAgent\Dto\SeoDto;
-use WooSimpleSeoAgent\Neuron\SeoAgent as NeuronSeoAgent;
+use NeuronAI\AgentInterface;
 use WooSimpleSeoAgent\Service\SeoAgentInterface;
 
 final readonly class NeuronSeoAgentAdapter implements SeoAgentInterface
 {
     public function __construct(
-        private NeuronSeoAgent $seoAgent,
+        private AgentInterface $seoAgent,
         private JsonExtractor $jsonExtractor
     ) {
     }

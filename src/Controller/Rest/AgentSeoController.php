@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace WooSimpleSeoAgent\Controller\Rest;
 
 
+use WooSimpleSeoAgent\Service\PromptBuilderInterface;
 use WooSimpleSeoAgent\Service\SeoAgentInterface;
-use WooSimpleSeoAgent\Service\PromptBuilder;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -16,7 +16,7 @@ final class AgentSeoController extends AbstractRestController implements RestCon
 
     public function __construct(
         private readonly SeoAgentInterface $seoAgent,
-        private readonly PromptBuilder $promptBuilder
+        private readonly PromptBuilderInterface $promptBuilder
     ) {
     }
 

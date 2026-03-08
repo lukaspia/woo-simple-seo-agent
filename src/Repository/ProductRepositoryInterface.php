@@ -31,4 +31,6 @@ interface ProductRepositoryInterface
      * @return bool
      */
     public function updateTags(int $productId, array $tags): bool;
+
+    public function getProductDataForSeo(int $productId): array;
 }
