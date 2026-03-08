@@ -6,6 +6,7 @@ namespace WooSimpleSeoAgent\Service;
 
 use NeuronAI\Chat\Messages\UserMessage;
 use NeuronAI\StructuredOutput\JsonExtractor;
+use WooSimpleSeoAgent\Dto\SeoDto;
 use WooSimpleSeoAgent\Neuron\SeoAgent as NeuronSeoAgent;
 use WooSimpleSeoAgent\Service\SeoAgentInterface;
 
@@ -20,11 +21,11 @@ final readonly class NeuronSeoAgentAdapter implements SeoAgentInterface
     /**
      * @param string $prompt
      * @param array $context
-     * @return array
+     * @return \WooSimpleSeoAgent\Dto\SeoDto
      * @throws \JsonException
      * @throws \Throwable
      */
-    public function generateSeoContent(string $prompt, array $context = []): array
+    public function generateSeoContent(string $prompt, array $context = []): SeoDto
     {
         $fullPrompt = $this->enrichPromptWithContext($prompt, $context);
 
@@ -41,7 +42,9 @@ final readonly class NeuronSeoAgentAdapter implements SeoAgentInterface
             );
         }
 
-        return json_decode($seoJson, true, 512, JSON_THROW_ON_ERROR);
+        $data = json_decode($seoJson, true, 512, JSON_THROW_ON_ERROR);
+
+        return SeoDto::fromArray($data);
     }
 
     /**

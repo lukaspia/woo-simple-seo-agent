@@ -49,7 +49,7 @@ final class AgentSeoController extends AbstractRestController implements RestCon
             ]);
 
             return $this->successResponse([
-                                              'seoData' => $result,
+                                              'seoData' => $result->toArray(),
                                               'prompt' => $promptObject->toString()
                                           ]);
         } catch (\Exception $e) {
