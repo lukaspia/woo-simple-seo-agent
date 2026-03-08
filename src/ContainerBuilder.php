@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace WooSimpleSeoAgent;
 
 use NeuronAI\StructuredOutput\JsonExtractor;
-use WooSimpleSeoAgent\Assets\AssetManager;
+use WooSimpleSeoAgent\Assets\AssetEnqueuer;
 use WooSimpleSeoAgent\Controller\Admin\ProductSeoMetaboxController;
 use WooSimpleSeoAgent\Controller\Rest\AgentSeoController;
 use WooSimpleSeoAgent\Controller\Rest\ProductMetaController;
@@ -28,7 +28,7 @@ final class ContainerBuilder
         $baseUrl = plugin_dir_url($mainFile);
 
         $renderer = new ViewRenderer();
-        $assets = new AssetManager($basePath, $baseUrl);
+        $assets = new AssetEnqueuer($basePath, $baseUrl);
         $jsonExtractor = new JsonExtractor();
         $neuronSeo = new NeuronSeoAgent();
         $promptBuilder = new PromptBuilder();

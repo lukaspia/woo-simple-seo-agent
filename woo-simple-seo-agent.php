@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace WooSimpleSeoAgent;
 
+use WooSimpleSeoAgent\Assets\AssetEnqueuer;
 use WooSimpleSeoAgent\Controller\Admin\ProductSeoMetaboxController;
 use WooSimpleSeoAgent\Rest\RestRouteRegistrar;
 
@@ -69,6 +70,11 @@ final class WooSimpleSeoAgent
      */
     private function registerHooks(): void
     {
+        $assets = $this->container->getService('assets');
+        if ($assets instanceof AssetEnqueuer) {
+            add_action('admin_enqueue_scripts', [$assets, 'registerAdminScripts']);
+        }
+
         $metabox = $this->container->getController('metabox');
         if ($metabox instanceof ProductSeoMetaboxController) {
             add_action('add_meta_boxes', [$metabox, 'register']);
