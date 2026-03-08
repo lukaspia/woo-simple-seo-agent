@@ -15,6 +15,11 @@ class ProductMetaController extends AbstractRestController
     public const UPDATE_KEYWORDS_URL = '/product/update-keywords';
 
 
+    public function validateProductId($value, $request, $paramName): bool
+    {
+        return is_numeric($value);
+    }
+
     public function registerRoutes(string $namespace): void
     {
         register_rest_route(
