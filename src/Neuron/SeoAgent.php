@@ -11,7 +11,7 @@ use NeuronAI\SystemPrompt;
 use NeuronAI\Tools\PropertyType;
 use NeuronAI\Tools\Tool;
 use NeuronAI\Tools\ToolProperty;
-use WooSimpleSeoAgent\Dto\Seo;
+use WooSimpleSeoAgent\Dto\SeoDto;
 
 /**
  * Class SeoAgent
@@ -108,7 +108,7 @@ class SeoAgent extends Agent
      */
     protected function getOutputClass(): string
     {
-        return Seo::class;
+        return SeoDto::class;
     }
 
     private function getKeywords(int $productId): string
