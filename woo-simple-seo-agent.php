@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace WooSimpleSeoAgent;
 
 use WooSimpleSeoAgent\Controller\Admin\ProductSeoMetaboxController;
+use WooSimpleSeoAgent\Rest\RestRouteRegistrar;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -71,6 +72,11 @@ final class WooSimpleSeoAgent
         $metabox = $this->container->getController('metabox');
         if ($metabox instanceof ProductSeoMetaboxController) {
             add_action('add_meta_boxes', [$metabox, 'register']);
+        }
+
+        $api = $this->container->getController('api');
+        if ($api instanceof RestRouteRegistrar) {
+            add_action('rest_api_init', [$api, 'registerRoutes']);
         }
     }
 }

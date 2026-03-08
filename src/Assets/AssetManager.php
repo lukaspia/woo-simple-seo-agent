@@ -6,7 +6,7 @@ namespace WooSimpleSeoAgent\Assets;
 
 use WooSimpleSeoAgent\Controller\Rest\AgentSeoController;
 use WooSimpleSeoAgent\Controller\Rest\ProductMetaController;
-use WooSimpleSeoAgent\Rest\ApiManager;
+use WooSimpleSeoAgent\Rest\RestRouteRegistrar;
 
 readonly class AssetManager
 {
@@ -52,7 +52,7 @@ readonly class AssetManager
             $styleVersion
         );
 
-        $namespace = ApiManager::NAMESPACE;
+        $namespace = RestRouteRegistrar::NAMESPACE;
 
         wp_localize_script(
             'woo-simple-seo-agent-script',
